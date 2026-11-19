@@ -22,6 +22,8 @@ branchspoken/
 ├── index.html    # Welcome page
 ├── login.html    # Sign in
 ├── signup.html   # Create an account and a new family tree
+├── join.html     # Join a family tree from an invite
+├── tree.html     # Family tree home page
 └── README.md
 ```
 
