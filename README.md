@@ -25,6 +25,7 @@ branchspoken/
 ├── join.html     # Join a family tree from an invite
 ├── tree.html     # Family tree home page
 ├── relative.html # A relative's profile and their stories
+├── story.html    # Read or listen to a single story
 └── README.md
 ```
 
