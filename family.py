@@ -2,8 +2,8 @@
 
 from db import load_family_data
 
-# Who is signed in. Comes from the login session once accounts exist.
-VIEWER_ID = "daniel"
+# Who is signed in, set by refresh() from the login session
+VIEWER_ID = None
 
 # Total distance of the journeys on the map
 JOURNEY_MILES = 4600
@@ -12,10 +12,36 @@ JOURNEY_MILES = 4600
 PEOPLE, FAMILIES, STORIES, RECORDS, PLACES = {}, {}, {}, {}, {}
 JOURNEYS, EVENTS, MEMBERS, QUESTIONS = [], [], [], []
 
+# The trees the viewer belongs to, and everyone in them.
+# Nobody outside these trees is shown to the viewer.
+VIEWER_FAMILIES = []
+VISIBLE = set()
 
-def refresh():
+
+def refresh(viewer_id=None):
     """Reload the family from the database so new stories show up right away."""
     globals().update(load_family_data())
+    globals()["VIEWER_ID"] = viewer_id
+
+    families = []
+    for m in MEMBERS:
+        if m["person"] == viewer_id and m["role"] != "pending" and m["family"] not in families:
+            families.append(m["family"])
+    visible = set()
+    for family_id in families:
+        visible |= tree_people(family_id)
+        visible |= {m["person"] for m in MEMBERS if m["family"] == family_id}
+    globals()["VIEWER_FAMILIES"] = families
+    globals()["VISIBLE"] = visible
+
+
+def can_see(person_id):
+    return person_id in VISIBLE
+
+
+def can_see_story(story_id):
+    story = STORIES.get(story_id)
+    return bool(story) and bool(VISIBLE & set(story["subjects"]))
 
 
 # ---------- People ----------
@@ -26,8 +52,8 @@ def get_person(person_id):
         return None
     p = dict(PEOPLE[person_id], id=person_id)
     p["name"] = f"{p['first']} {p['last']}"
-    p["pronoun"] = "her" if p["sex"] == "f" else "his"
-    p["object"] = "her" if p["sex"] == "f" else "him"
+    p["pronoun"] = {"f": "her", "m": "his"}.get(p["sex"], "their")
+    p["object"] = {"f": "her", "m": "him"}.get(p["sex"], "them")
     return p
 
 
@@ -39,12 +65,12 @@ def children_of(*parent_ids):
     """Children whose parents are exactly these people, oldest first."""
     wanted = set(parent_ids)
     kids = [pid for pid, p in PEOPLE.items() if set(p.get("parents", [])) == wanted]
-    return sorted(kids, key=lambda pid: PEOPLE[pid]["born"])
+    return sorted(kids, key=lambda pid: PEOPLE[pid]["born"] or 9999)
 
 
 def all_children_of(person_id):
     kids = [pid for pid, p in PEOPLE.items() if person_id in p.get("parents", [])]
-    return sorted(kids, key=lambda pid: PEOPLE[pid]["born"])
+    return sorted(kids, key=lambda pid: PEOPLE[pid]["born"] or 9999)
 
 
 def siblings_of(person_id):
@@ -61,29 +87,33 @@ def spouse_of(person_id):
 
 # ---------- Relationships ----------
 
+# (male, female, neutral) - the neutral word is used when sex isn't set
 WORDS = {
-    "spouse": ("husband", "wife"),
-    "parent": ("father", "mother"),
-    "child": ("son", "daughter"),
-    "sibling": ("brother", "sister"),
-    "grandparent": ("grandfather", "grandmother"),
-    "great-grandparent": ("great-grandfather", "great-grandmother"),
-    "grandchild": ("grandson", "granddaughter"),
-    "aunt-uncle": ("uncle", "aunt"),
-    "niece-nephew": ("nephew", "niece"),
-    "cousin": ("cousin", "cousin"),
-    "parent-in-law": ("father-in-law", "mother-in-law"),
-    "child-in-law": ("son-in-law", "daughter-in-law"),
+    "spouse": ("husband", "wife", "spouse"),
+    "parent": ("father", "mother", "parent"),
+    "child": ("son", "daughter", "child"),
+    "sibling": ("brother", "sister", "sibling"),
+    "grandparent": ("grandfather", "grandmother", "grandparent"),
+    "great-grandparent": ("great-grandfather", "great-grandmother", "great-grandparent"),
+    "grandchild": ("grandson", "granddaughter", "grandchild"),
+    "aunt-uncle": ("uncle", "aunt", "aunt or uncle"),
+    "niece-nephew": ("nephew", "niece", "niece or nephew"),
+    "cousin": ("cousin", "cousin", "cousin"),
+    "parent-in-law": ("father-in-law", "mother-in-law", "parent-in-law"),
+    "child-in-law": ("son-in-law", "daughter-in-law", "child-in-law"),
 }
 
 
 def _word(kind, person_id):
-    male, female = WORDS[kind]
-    return female if PEOPLE[person_id]["sex"] == "f" else male
+    male, female, neutral = WORDS[kind]
+    return {"m": male, "f": female}.get(PEOPLE[person_id]["sex"], neutral)
 
 
 def _side(parent_id):
-    return "mother's side" if PEOPLE[parent_id]["sex"] == "f" else "father's side"
+    sex = PEOPLE[parent_id]["sex"]
+    if sex in ("m", "f"):
+        return "father's side" if sex == "m" else "mother's side"
+    return f"{PEOPLE[parent_id]['first']}'s side"
 
 
 def relation(from_id, to_id):
@@ -170,9 +200,9 @@ def get_story(story_id):
 
 
 def all_stories():
-    """Every story, newest first."""
+    """Every story the viewer can see, newest first."""
     ids = sorted(STORIES, key=lambda sid: STORIES[sid]["added"], reverse=True)
-    return [get_story(sid) for sid in ids]
+    return [get_story(sid) for sid in ids if can_see_story(sid)]
 
 
 def stories_about(*person_ids):
@@ -201,18 +231,20 @@ def profile(person_id):
 
     family = []
     if spouse_of(person_id):
-        family.append((_word("spouse", spouse_of(person_id)).capitalize(), [get_person(spouse_of(person_id))]))
+        if can_see(spouse_of(person_id)):
+            family.append((_word("spouse", spouse_of(person_id)).capitalize(), [get_person(spouse_of(person_id))]))
     for label, ids in [("Parents", parents_of(person_id)),
                        ("Brothers and sisters", siblings_of(person_id)),
                        ("Children", all_children_of(person_id)),
                        ("Grandchildren", [g for c in all_children_of(person_id) for g in all_children_of(c)])]:
+        ids = [pid for pid in ids if can_see(pid)]
         if ids:
             family.append((label, [get_person(pid) for pid in ids]))
 
     # suggest asking a living child (or the husband or wife) for a story
     ask = None
     for pid in all_children_of(person_id) + [spouse_of(person_id)]:
-        if pid and pid != VIEWER_ID and "died" not in PEOPLE[pid]:
+        if pid and pid != VIEWER_ID and can_see(pid) and "died" not in PEOPLE[pid]:
             asker = get_person(pid)
             word, _ = relation(person_id, pid)
             ask = {"person": asker, "text": f"{asker['first']} is {person['pronoun']} {word}. "
@@ -234,10 +266,7 @@ def profile(person_id):
 
 def _node(person_ids):
     people = [get_person(pid) for pid in person_ids]
-    if len(people) == 2:
-        years = f"b. {people[0]['born']} · b. {people[1]['born']}"
-    else:
-        years = f"b. {people[0]['born']}"
+    years = " · ".join(f"b. {p['born']}" for p in people if p["born"])
     return {
         "people": people,
         "years": years,
@@ -261,6 +290,28 @@ def _collect(node, found):
     found.update(p["id"] for p in node["people"])
     for child in node.get("children", []):
         _collect(child, found)
+    return found
+
+
+def _people_below(person_id, side, found):
+    ids = [person_id]
+    spouse = spouse_of(person_id)
+    if spouse and PEOPLE[spouse]["side"] == side:
+        ids.append(spouse)
+    found.update(ids)
+    for kid in children_of(*ids):
+        _people_below(kid, side, found)
+
+
+def tree_people(family_id):
+    """Everyone drawn on a family's tree."""
+    family = FAMILIES[family_id]
+    found = set()
+    for branch in family["branches"]:
+        _people_below(branch["root"], branch["side"], found)
+    if family.get("meet"):
+        found.update(family["meet"])
+        found.update(children_of(*family["meet"]))
     return found
 
 
@@ -302,13 +353,17 @@ def family_tree(family_id):
 def timeline():
     entries = []
     for pid in PEOPLE:
+        if not can_see(pid) or not PEOPLE[pid]["born"]:
+            continue
         p = get_person(pid)
         entries.append({
             "year": p["born"], "side": p["side"], "title": f"{p['first']} is born",
             "url_person": pid,
-            "note": "That's you" if pid == VIEWER_ID else p["birthplace"],
+            "note": "That's you" if pid == VIEWER_ID else (p["birthplace"] or ""),
         })
     for event in EVENTS:
+        if event["family"] not in VIEWER_FAMILIES:
+            continue
         entry = dict(event)
         if event.get("story"):
             story = get_story(event["story"])
@@ -325,24 +380,28 @@ def timeline():
 def places():
     result = []
     for place_id, place in PLACES.items():
-        count = len([s for s in STORIES.values() if s.get("place") == place_id])
+        if place["family"] not in VIEWER_FAMILIES:
+            continue
+        count = len([s for s in all_stories() if s.get("place") == place_id])
         result.append(dict(place, id=place_id, story_count=count))
     return result
 
 
 def journeys():
-    return [dict(j, story=get_story(j["story"]) if j["story"] else None) for j in JOURNEYS]
+    return [dict(j, story=get_story(j["story"]) if j["story"] and can_see_story(j["story"]) else None)
+            for j in JOURNEYS if j["family"] in VIEWER_FAMILIES]
 
 
 def map_summary():
-    return {"homelands": len(PLACES), "journeys": len(JOURNEYS), "miles": JOURNEY_MILES}
+    trips = journeys()
+    return {"homelands": len(places()), "journeys": len(trips), "miles": JOURNEY_MILES if trips else 0}
 
 
 # ---------- Members and invites ----------
 
-def members():
+def members(family_id):
     result = []
-    for member in MEMBERS:
+    for member in [m for m in MEMBERS if m["family"] == family_id]:
         person = get_person(member["person"])
         word, _ = relation(VIEWER_ID, person["id"])
         told = stories_told_by(person["id"])
@@ -360,17 +419,14 @@ def members():
 
 
 def invite(family_id):
-    """Who sent the viewer's invite and how they were added."""
+    """What the join page shows once an invite code is found."""
     family = FAMILIES[family_id]
-    keeper = next(m["person"] for m in MEMBERS if m["role"] == "keeper")
-    inviter = get_person(keeper)
-    word, _ = relation(keeper, VIEWER_ID)
+    keeper = next((m["person"] for m in MEMBERS
+                   if m["family"] == family_id and m["role"] == "keeper"), None)
     tree = family_tree(family_id)
     return {
         "family": family,
-        "inviter": inviter,
-        "added_as": f"{inviter['first']}'s {word}",
-        "viewer": get_person(VIEWER_ID),
+        "inviter": get_person(keeper) if keeper else None,
         "people_count": tree["people_count"],
         "story_count": tree["story_count"],
     }
@@ -379,20 +435,21 @@ def invite(family_id):
 # ---------- Archive ----------
 
 def archive_items():
-    return [dict(record, id=rid) for rid, record in RECORDS.items()]
+    return [dict(record, id=rid) for rid, record in RECORDS.items()
+            if record["family"] in VIEWER_FAMILIES]
 
 
 def archive_counts():
     counts = {}
-    for record in RECORDS.values():
+    for record in archive_items():
         counts[record["kind"]] = counts.get(record["kind"], 0) + 1
     return counts
 
 
 def waiting_record():
-    for rid, record in RECORDS.items():
+    for record in archive_items():
         if record.get("waiting"):
-            return dict(record, id=rid)
+            return record
     return None
 
 
@@ -402,7 +459,7 @@ def storyteller_options():
     """Living relatives who could be recorded, closest first, then 'me'."""
     options = []
     for pid in PEOPLE:
-        if pid == VIEWER_ID or "died" in PEOPLE[pid]:
+        if pid == VIEWER_ID or not can_see(pid) or "died" in PEOPLE[pid]:
             continue
         person = get_person(pid)
         word, _ = relation(VIEWER_ID, pid)

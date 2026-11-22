@@ -14,6 +14,7 @@
   <main>
 
     <form action="{{ url_for('add_memory') }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
       <header class="record-bar">
         <a href="{{ url_for('tree') }}">Cancel</a>
@@ -22,11 +23,13 @@
       </header>
 
       <section class="recording-who" aria-labelledby="recording-heading">
-        {% set current = options|selectattr("person.id", "equalto", chosen)|first %}
+        {% set matches = options|selectattr("person.id", "equalto", chosen)|list %}
+        {% set current = matches[0] if matches else none %}
         <h1 id="recording-heading">Recording
           {%- if current.relation == "grandfather" %} Grandpa {{ current.person.first }}
           {%- elif current.relation == "grandmother" %} Grandma {{ current.person.first }}
-          {%- else %} {{ current.person.first }}{% endif -%}
+          {%- elif current %} {{ current.person.first }}
+          {%- else %} yourself{% endif -%}
         </h1>
 
         <label for="storyteller">Who is telling the story?</label>
@@ -34,7 +37,7 @@
           {% for o in options %}
             <option value="{{ o.person.id }}"{% if o.person.id == chosen %} selected{% endif %}>{{ o.person.name }}, your {{ o.relation }}</option>
           {% endfor %}
-          <option value="me">Me, I'm telling it myself</option>
+          <option value="me"{% if chosen == "me" %} selected{% endif %}>Me, I'm telling it myself</option>
         </select>
         {% if request.args.reply %}
           <input type="hidden" name="reply" value="{{ request.args.reply }}">

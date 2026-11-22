@@ -73,7 +73,7 @@ def load_family_data():
     records = {}
     for row in _rows("SELECT * FROM records ORDER BY position"):
         records[row["id"]] = {
-            "title": row["title"], "kind": row["kind"], "year": row["year_label"],
+            "family": row["family_id"], "title": row["title"], "kind": row["kind"], "year": row["year_label"],
             "people": row["people_label"], "image": row["image"], "alt": row["alt"],
             "waiting": row["waiting"],
         }
@@ -101,19 +101,19 @@ def load_family_data():
     places = {}
     for row in _rows("SELECT * FROM places ORDER BY map_x DESC"):
         places[row["id"]] = {
-            "name": row["name"], "short": row["short_name"], "side": row["side"],
+            "family": row["family_id"], "name": row["name"], "short": row["short_name"], "side": row["side"],
             "families": row["families"], "years": row["years"], "x": row["map_x"], "y": row["map_y"],
         }
 
     journeys = [
-        {"year": r["year"], "from": r["from_place"], "to": r["to_place"], "side": r["side"],
+        {"family": r["family_id"], "year": r["year"], "from": r["from_place"], "to": r["to_place"], "side": r["side"],
          "text": r["text"], "story": r["story_id"], "path": r["path"]}
         for r in _rows("SELECT * FROM journeys ORDER BY year")
     ]
 
     events = []
     for r in _rows("SELECT * FROM events ORDER BY year"):
-        event = {"year": r["year"], "title": r["title"], "side": r["side"]}
+        event = {"family": r["family_id"], "year": r["year"], "title": r["title"], "side": r["side"]}
         for column in ["story", "note", "anchor"]:
             value = r["story_id"] if column == "story" else r[column]
             if value:
@@ -121,8 +121,8 @@ def load_family_data():
         events.append(event)
 
     members = [
-        {"person": r["person_id"], "role": r["role"], "note": r["note"]}
-        for r in _rows("SELECT * FROM members WHERE family_id = %s ORDER BY position", ("miller",))
+        {"family": r["family_id"], "person": r["person_id"], "role": r["role"], "note": r["note"]}
+        for r in _rows("SELECT * FROM members ORDER BY family_id, position")
     ]
 
     questions = [r["text"] for r in _rows("SELECT text FROM questions ORDER BY position")]

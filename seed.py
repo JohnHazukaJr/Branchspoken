@@ -9,14 +9,15 @@ from pathlib import Path
 
 import psycopg
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash
 
 from data import (EVENTS, FAMILIES, JOURNEYS, MEMBERS, PEOPLE, PLACES,
-                  QUESTIONS, RECORDS, STORIES)
+                  QUESTIONS, RECORDS, STORIES, USERS)
 
 load_dotenv()
 
-# the sample members all belong to this tree
-MEMBERS_FAMILY = "miller"
+# records, places, journeys and events belong to this tree unless they say otherwise
+DEFAULT_FAMILY = "miller"
 
 
 def seed(conn):
@@ -53,19 +54,25 @@ def seed(conn):
             cur.execute(
                 """INSERT INTO members (family_id, person_id, role, note, position)
                    VALUES (%s, %s, %s, %s, %s)""",
-                (MEMBERS_FAMILY, m["person"], m["role"], m.get("note"), position))
+                (m["family"], m["person"], m["role"], m.get("note"), position))
+
+        for u in USERS:
+            cur.execute(
+                "INSERT INTO users (person_id, email, password_hash) VALUES (%s, %s, %s)",
+                (u["person"], u["email"], generate_password_hash(u["password"])))
 
         for place_id, p in PLACES.items():
             cur.execute(
-                """INSERT INTO places (id, name, short_name, side, families, years, map_x, map_y)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-                (place_id, p["name"], p["short"], p["side"], p["families"], p["years"], p["x"], p["y"]))
+                """INSERT INTO places (id, family_id, name, short_name, side, families, years, map_x, map_y)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (place_id, p.get("family", DEFAULT_FAMILY), p["name"], p["short"], p["side"], p["families"], p["years"], p["x"], p["y"]))
 
         for position, (rid, r) in enumerate(RECORDS.items()):
             cur.execute(
-                """INSERT INTO records (id, title, kind, year_label, people_label, image, alt, waiting, position)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                (rid, r["title"], r["kind"], r["year"], r["people"], r["image"], r["alt"],
+                """INSERT INTO records (id, family_id, title, kind, year_label, people_label, image, alt,
+                                        waiting, position)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (rid, r.get("family", DEFAULT_FAMILY), r["title"], r["kind"], r["year"], r["people"], r["image"], r["alt"],
                  r.get("waiting"), position))
 
         for sid, s in STORIES.items():
@@ -89,14 +96,15 @@ def seed(conn):
 
         for j in JOURNEYS:
             cur.execute(
-                """INSERT INTO journeys (year, from_place, to_place, side, text, story_id, path)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s)""",
-                (j["year"], j["from"], j["to"], j["side"], j["text"], j["story"], j["path"]))
+                """INSERT INTO journeys (family_id, year, from_place, to_place, side, text, story_id, path)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
+                (j.get("family", DEFAULT_FAMILY), j["year"], j["from"], j["to"], j["side"], j["text"], j["story"], j["path"]))
 
         for e in EVENTS:
             cur.execute(
-                "INSERT INTO events (year, title, side, story_id, note, anchor) VALUES (%s, %s, %s, %s, %s, %s)",
-                (e["year"], e["title"], e["side"], e.get("story"), e.get("note"), e.get("anchor")))
+                """INSERT INTO events (family_id, year, title, side, story_id, note, anchor)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                (e.get("family", DEFAULT_FAMILY), e["year"], e["title"], e["side"], e.get("story"), e.get("note"), e.get("anchor")))
 
         for position, text in enumerate(QUESTIONS, start=1):
             cur.execute("INSERT INTO questions (position, text) VALUES (%s, %s)", (position, text))
@@ -106,3 +114,4 @@ if __name__ == "__main__":
     with psycopg.connect(os.environ["DATABASE_URL"]) as conn:
         seed(conn)
     print(f"Loaded {len(PEOPLE)} people, {len(STORIES)} stories and {len(RECORDS)} records.")
+    print("Demo accounts:", ", ".join(u["email"] for u in USERS), "(password: family-stories)")

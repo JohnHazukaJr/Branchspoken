@@ -45,7 +45,7 @@
       </select>
     </form>
 
-    <h1>{{ tree.people_count }} people &middot; {{ tree.story_count }} stories</h1>
+    <h1>{{ tree.people_count }} {{ "person" if tree.people_count == 1 else "people" }} &middot; {{ tree.story_count }} {{ "story" if tree.story_count == 1 else "stories" }}</h1>
 
     <a class="add" href="{{ url_for('add_memory') }}" aria-label="Add a memory">+</a>
   </header>

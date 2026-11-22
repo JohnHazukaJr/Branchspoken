@@ -12,7 +12,7 @@
   <main>
 
     <header class="page-head">
-      <p class="eyebrow">Family</p>
+      <p class="eyebrow">{{ family_name }}</p>
       <h1>{{ members|length }} people tending this tree</h1>
     </header>
 
@@ -21,6 +21,7 @@
       <p>They can add stories by voice. No account setup for grandparents.</p>
 
       <form action="{{ url_for('family') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div>
           <label for="invite-name">Their name</label>
           <input type="text" id="invite-name" name="name" placeholder="Margaret Sullivan" required>
@@ -51,6 +52,14 @@
         <input type="text" id="invite-url" value="branchspoken.com/join?code={{ invite_code }}" readonly>
         <button class="button button-outline" type="button">Copy link</button>
       </div>
+
+      {% if is_keeper %}
+        <form class="new-code" action="{{ url_for('new_invite_code') }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <p>Shared the link with the wrong person? Make a new one and the old link stops working.</p>
+          <button class="button button-small" type="submit">Make a new invite link</button>
+        </form>
+      {% endif %}
     </section>
 
     <section aria-labelledby="members-heading">
@@ -82,6 +91,12 @@
         <dd>Adds and tells stories, and tags who they're about.</dd>
       </dl>
     </section>
+
+    <form class="sign-out" action="{{ url_for('logout') }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <p class="meta">Signed in as {{ g.viewer.name }}</p>
+      <button class="button button-outline" type="submit">Sign out</button>
+    </form>
 
   </main>
 

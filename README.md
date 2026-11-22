@@ -21,6 +21,7 @@ A place for families to keep the stories they tell about each other. Join your f
 branchspoken/
 ├── app.py                # Flask app and page routes
 ├── db.py                 # PostgreSQL connection, loads the family for each request
+├── accounts.py           # Sign up, sign in and joining a tree
 ├── data.py               # Sample family that seed.py loads into the database
 ├── family.py             # Relationships, story counts and page data
 ├── schema.sql            # PostgreSQL tables
@@ -113,3 +114,30 @@ flask --app app run --debug
 Then open http://127.0.0.1:5000.
 
 Running `python seed.py` again resets the database to the sample family.
+
+### Demo accounts
+
+`python seed.py` creates two accounts in the sample family, both with the password `family-stories`:
+
+- `daniel@example.com`: Daniel, who belongs to both the Miller and Sullivan trees
+- `thomas@example.com`: Thomas, Daniel's father, who started the Miller tree
+
+To try joining, sign up through **I was invited by family** with the code `MILLER-K7QF-29XD` and the name Claire Miller. Claire is waiting on a pending invite, so the new account takes over her place in the tree.
+
+## Security
+
+- Passwords are stored as salted hashes, never as plain text.
+- You only see people, stories, records and places from the family trees you belong to. Everything else returns "Not found".
+- Every form that changes something carries a CSRF token, so other websites can't submit forms as you.
+- Signing in, signing up and entering invite codes are rate-limited to stop guessing.
+- Invite codes are long and random (`MILLER-K7QF-29XD`). A tree's Keeper can replace the code from the Family page if it gets shared.
+- Responses send a Content Security Policy and other security headers, so pages only run this site's own scripts and can't be embedded elsewhere.
+- Database queries use parameters, and templates escape everything people type.
+- Uploads are capped at 25 MB.
+
+Before putting the site online:
+
+- Serve it over HTTPS and set `SESSION_COOKIE_SECURE=1` in `.env`.
+- Use a long random `SECRET_KEY`.
+- Move the rate limiter's storage from memory to Redis, so limits survive restarts and are shared between workers.
+

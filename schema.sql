@@ -12,7 +12,7 @@ CREATE TABLE people (
     id            TEXT PRIMARY KEY,              -- used in page addresses, e.g. /relatives/ruth
     first_name    TEXT NOT NULL,
     last_name     TEXT NOT NULL,
-    sex           CHAR(1) NOT NULL CHECK (sex IN ('f', 'm')),
+    sex           CHAR(1) CHECK (sex IN ('f', 'm')),   -- empty means use neutral words
     side          TEXT NOT NULL,                 -- family line: miller, sullivan or both
     born          INTEGER,
     birthplace    TEXT,
@@ -72,6 +72,7 @@ CREATE TABLE members (
 
 CREATE TABLE places (
     id         TEXT PRIMARY KEY,
+    family_id  TEXT NOT NULL REFERENCES families (id) ON DELETE CASCADE,
     name       TEXT NOT NULL,
     short_name TEXT NOT NULL,
     side       TEXT NOT NULL,
@@ -86,6 +87,7 @@ CREATE TABLE places (
 
 CREATE TABLE records (
     id           TEXT PRIMARY KEY,
+    family_id    TEXT NOT NULL REFERENCES families (id) ON DELETE CASCADE,
     title        TEXT NOT NULL,
     kind         TEXT NOT NULL CHECK (kind IN ('photo', 'record', 'letter', 'document')),
     year_label   TEXT,
@@ -140,6 +142,7 @@ CREATE TABLE story_records (
 
 CREATE TABLE journeys (
     id         SERIAL PRIMARY KEY,
+    family_id  TEXT NOT NULL REFERENCES families (id) ON DELETE CASCADE,
     year       INTEGER NOT NULL,
     from_place TEXT NOT NULL REFERENCES places (id),
     to_place   TEXT NOT NULL REFERENCES places (id),
@@ -150,7 +153,8 @@ CREATE TABLE journeys (
 );
 
 CREATE TABLE events (
-    id       SERIAL PRIMARY KEY,
+    id        SERIAL PRIMARY KEY,
+    family_id TEXT NOT NULL REFERENCES families (id) ON DELETE CASCADE,
     year     INTEGER NOT NULL,
     title    TEXT NOT NULL,
     side     TEXT NOT NULL,

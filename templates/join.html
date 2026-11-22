@@ -18,37 +18,43 @@
       <h1 id="join-heading">Join your family's tree.</h1>
       <p class="lead">Someone in your family saved you a spot. Enter the code from your invite to find it.</p>
 
+      {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+
       <form method="get" aria-label="Find your invite">
         <div>
           <label for="invite-code">Invite code</label>
-          <input type="text" id="invite-code" name="code" placeholder="{{ invite.family.invite_code }}" autocomplete="off" required>
+          <input type="text" id="invite-code" name="code" placeholder="MILLER-4821" value="{{ code }}" autocomplete="off" required>
         </div>
 
         <button type="submit">Find my invite</button>
       </form>
     </section>
 
+    {% if invite %}
     <section class="card" aria-labelledby="invite-heading">
-      <h2 id="invite-heading">{{ invite.inviter.name }} invited you to {{ invite.family.name }}</h2>
+      <h2 id="invite-heading">
+        {%- if invite.inviter %}{{ invite.inviter.name }} invited you to {{ invite.family.name }}{% else %}Join {{ invite.family.name }}{% endif -%}
+      </h2>
       <p class="meta">{{ invite.people_count }} people &middot; {{ invite.story_count }} stories</p>
-      <p>You were added as <strong>{{ invite.added_as }}</strong>.</p>
+      <p>If someone already added you to the tree, use the same name they did so your stories stay linked to you.</p>
 
       <form method="post" aria-label="Create your account">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="code" value="{{ invite.family.invite_code }}">
 
         <div>
           <label for="first-name">First name</label>
-          <input type="text" id="first-name" name="first_name" autocomplete="given-name" value="{{ invite.viewer.first }}" required>
+          <input type="text" id="first-name" name="first_name" autocomplete="given-name" value="{{ form.first_name }}" required>
         </div>
 
         <div>
           <label for="last-name">Last name</label>
-          <input type="text" id="last-name" name="last_name" autocomplete="family-name" value="{{ invite.viewer.last }}" required>
+          <input type="text" id="last-name" name="last_name" autocomplete="family-name" value="{{ form.last_name }}" required>
         </div>
 
         <div>
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" autocomplete="email" required>
+          <input type="email" id="email" name="email" autocomplete="email" value="{{ form.email }}" required>
         </div>
 
         <div>
@@ -60,10 +66,11 @@
         <button type="submit">Join {{ invite.family.name }}</button>
       </form>
 
-      <p class="fine-print">Not you? <a href="{{ url_for('join') }}">Use a different code</a></p>
+      <p class="fine-print">Wrong tree? <a href="{{ url_for('join') }}">Use a different code</a></p>
     </section>
+    {% endif %}
 
-    <p class="fine-print">Already have an account? <a href="{{ url_for('login') }}">Sign in</a> and the tree will be added to your account.</p>
+    <p class="fine-print">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
 
   </main>
 

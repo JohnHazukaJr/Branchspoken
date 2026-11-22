@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} | Branch Spoken{% endblock %}
+{% block body_class %}page-error{% endblock %}
+
+{% block tabbar %}{% if g.viewer %}{{ super() }}{% endif %}{% endblock %}
+
+{% block content %}
+
+  <main>
+    <section class="error-page" aria-labelledby="error-heading">
+      <p class="brand">Branch Spoken</p>
+      <h1 id="error-heading">{{ title }}</h1>
+      <p class="lead">{{ message }}</p>
+      <a class="button" href="{{ url_for('tree') if g.viewer else url_for('welcome') }}">
+        {{- "Back to your tree" if g.viewer else "Go to the welcome page" -}}
+      </a>
+    </section>
+  </main>
+
+{% endblock %}

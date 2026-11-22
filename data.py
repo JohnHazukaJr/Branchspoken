@@ -85,7 +85,7 @@ FAMILIES = {
         ],
         # the couple where the two lines join
         "meet": ["thomas", "anne"], "married": 1994,
-        "invite_code": "MILLER-4821",
+        "invite_code": "MILLER-K7QF-29XD",
     },
     "sullivan": {
         "name": "The Sullivan Family",
@@ -93,7 +93,7 @@ FAMILIES = {
             {"side": "sullivan", "title": "The Sullivans", "root": "henry"},
         ],
         "meet": ["thomas", "anne"], "married": 1994,
-        "invite_code": "SULLIVAN-1167",
+        "invite_code": "SULLIVAN-3MWT-8HCP",
     },
 }
 
@@ -336,19 +336,34 @@ EVENTS = [
 ]
 
 
-# ---------- Members of the Miller Family tree ----------
+# ---------- Who belongs to each tree ----------
 # role: keeper, editor, storyteller or pending
 
 MEMBERS = [
-    {"person": "thomas", "role": "keeper", "note": "started the tree"},
-    {"person": "anne", "role": "editor", "note": "tends the Sullivan branch"},
-    {"person": "henry", "role": "storyteller"},
-    {"person": "margaret", "role": "storyteller"},
-    {"person": "carol", "role": "storyteller"},
-    {"person": "emily", "role": "editor", "note": "tends the Miller branch"},
-    {"person": "daniel", "role": "storyteller"},
-    {"person": "claire", "role": "pending", "note": "invited 2 days ago"},
-    {"person": "patrick", "role": "pending", "note": "invited last week"},
+    {"family": "miller", "person": "thomas", "role": "keeper", "note": "started the tree"},
+    {"family": "miller", "person": "anne", "role": "editor", "note": "tends the Sullivan branch"},
+    {"family": "miller", "person": "henry", "role": "storyteller"},
+    {"family": "miller", "person": "margaret", "role": "storyteller"},
+    {"family": "miller", "person": "carol", "role": "storyteller"},
+    {"family": "miller", "person": "emily", "role": "editor", "note": "tends the Miller branch"},
+    {"family": "miller", "person": "daniel", "role": "storyteller"},
+    {"family": "miller", "person": "claire", "role": "pending", "note": "invited 2 days ago"},
+    {"family": "miller", "person": "patrick", "role": "pending", "note": "invited last week"},
+
+    {"family": "sullivan", "person": "anne", "role": "keeper", "note": "started the tree"},
+    {"family": "sullivan", "person": "henry", "role": "storyteller"},
+    {"family": "sullivan", "person": "margaret", "role": "storyteller"},
+    {"family": "sullivan", "person": "daniel", "role": "storyteller"},
+    {"family": "sullivan", "person": "sean", "role": "pending", "note": "invited yesterday"},
+]
+
+
+# ---------- Demo accounts ----------
+# seed.py stores these with hashed passwords
+
+USERS = [
+    {"person": "daniel", "email": "daniel@example.com", "password": "family-stories"},
+    {"person": "thomas", "email": "thomas@example.com", "password": "family-stories"},
 ]
 
 
