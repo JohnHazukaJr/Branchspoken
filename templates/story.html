@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% from "partials/stories.html" import byline %}
+
+{% block title %}{{ story.title }} | Branch Spoken{% endblock %}
+{% block body_class %}page-story{% endblock %}
+
+{% block scripts %}
+  {% if story.audio %}
+    <script src="{{ url_for('static', filename='js/story.js') }}" defer></script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+  <header>
+    <a class="back" href="{{ url_for('relative', person_id=story.main.id) }}" aria-label="Back to {{ story.main.first }}'s page">Back</a>
+    <p class="pager">Story {{ position }} of {{ count }} about {{ story.main.first }}</p>
+  </header>
+
+  <main>
+
+    <article aria-labelledby="story-title">
+
+      <header class="story-head">
+        <p class="eyebrow eyebrow-accent">
+          {{ byline(story) }} &middot; <time datetime="{{ story.year }}">{{ story.era }}</time>
+        </p>
+        <h1 id="story-title">{{ story.title }}</h1>
+        <p class="about">About
+          {%- for p in story.subjects %} <a href="{{ url_for('relative', person_id=p.id) }}">{{ p.first }}</a>{% if not loop.last %},{% endif %}{% endfor %}
+        </p>
+      </header>
+
+      {% if story.photo %}
+        <figure>
+          <img src="{{ url_for('static', filename=story.photo) }}" alt="{{ story.photo_alt }}">
+          <figcaption>{{ story.photo_caption }}</figcaption>
+        </figure>
+      {% endif %}
+
+      {% if story.audio %}
+        <section class="player" aria-labelledby="listen-heading">
+          <h2 id="listen-heading">Listen</h2>
+          <audio controls src="{{ url_for('static', filename=story.audio) }}">
+            Your browser can't play this recording. You can still read it below.
+          </audio>
+          <p>{{ story.teller.first }}'s voice &middot; {{ story.audio_length }}</p>
+        </section>
+      {% endif %}
+
+      <section class="transcript" aria-labelledby="transcript-heading">
+        <h2 id="transcript-heading">{{ "Transcript" if story.type == "voice" else "The story" }}</h2>
+        {% for paragraph in story.body %}
+          <p>{{ paragraph|record_links }}</p>
+        {% endfor %}
+      </section>
+
+      {% if story.records %}
+        <aside class="note" aria-labelledby="records-heading">
+          <h2 id="records-heading">From the records</h2>
+          {% if story.records_note %}
+            <p>{{ story.records_note }} Select any highlighted detail to see the record.</p>
+          {% endif %}
+          <ul>
+            {% for r in story.records %}
+              <li><a href="/records/{{ r.id }}">{{ r.title }}, {{ r.year }}</a></li>
+            {% endfor %}
+          </ul>
+        </aside>
+      {% endif %}
+
+    </article>
+
+    <section class="card" aria-labelledby="add-heading">
+      <h2 id="add-heading">Remember it differently?</h2>
+      <p>Add your side of this story.{% if story.teller %} It will stay linked to {{ story.teller.first }}'s.{% endif %}</p>
+      <a class="button button-outline" href="{{ url_for('add_memory', about=story.main.id, reply=story.id) }}">Add your version</a>
+    </section>
+
+    {% if previous_story %}
+      <nav class="pager-nav" aria-label="More stories about {{ story.main.first }}">
+        <a href="{{ url_for('story', story_id=previous_story.id) }}" rel="prev">Previous: {{ previous_story.title }}</a>
+        <a href="{{ url_for('story', story_id=next_story.id) }}" rel="next">Next: {{ next_story.title }}</a>
+      </nav>
+    {% endif %}
+
+  </main>
+
+{% endblock %}

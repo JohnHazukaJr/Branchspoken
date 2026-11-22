@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% from "partials/stories.html" import story_row %}
+
+{% block title %}{{ person.name }} | Branch Spoken{% endblock %}
+{% block body_class %}page-relative{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/share.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+
+  <header>
+    <a class="back" href="{{ url_for('tree') }}" aria-label="Back to the family tree">Back</a>
+    <a class="pill" href="/relatives/{{ person.id }}/share">Share</a>
+  </header>
+
+  <main>
+
+    <figure class="portrait">
+      {% if person.photo %}
+        <img src="{{ url_for('static', filename=person.photo) }}" alt="Portrait of {{ person.name }}">
+      {% endif %}
+      <figcaption>{{ person.photo_caption or person.first }}</figcaption>
+    </figure>
+
+    <section aria-labelledby="relative-name">
+      <p class="eyebrow">{{ relation }}</p>
+      <h1 id="relative-name">{{ person.name }}</h1>
+      <p class="lifespan">
+        {% if person.died %}
+          <time datetime="{{ person.born }}">{{ person.born }}</time> {{ person.birthplace }}
+          &mdash;
+          <time datetime="{{ person.died }}">{{ person.died }}</time> {{ person.deathplace }}
+        {% else %}
+          Born <time datetime="{{ person.born }}">{{ person.born }}</time> in {{ person.birthplace }}
+        {% endif %}
+      </p>
+
+      <div class="actions">
+        {% if voice_minutes %}
+          <a class="button listen" href="/relatives/{{ person.id }}/listen">Listen to {{ person.pronoun }} life &middot; {{ voice_minutes }} min</a>
+        {% endif %}
+        <a class="button button-outline square" href="{{ url_for('add_memory', about=person.id) }}" aria-label="Add a memory about {{ person.first }}">+</a>
+      </div>
+    </section>
+
+    {% if family %}
+      <section aria-labelledby="family-heading">
+        <h2 id="family-heading">Family</h2>
+        <dl class="family-list">
+          {% for label, relatives in family %}
+            <dt>{{ label }}</dt>
+            {% for r in relatives %}
+              <dd><a href="{{ url_for('relative', person_id=r.id) }}">{{ r.first }}</a></dd>
+            {% endfor %}
+          {% endfor %}
+        </dl>
+      </section>
+    {% endif %}
+
+    <section aria-labelledby="stories-heading">
+      <h2 id="stories-heading">{{ person.pronoun|capitalize }} stories</h2>
+
+      {% if stories %}
+        <p class="meta">
+          {{ stories|length }} {{ "story" if stories|length == 1 else "stories" }}
+          {%- if teller_count %} &middot; from {{ teller_count }} {{ "relative" if teller_count == 1 else "relatives" }}{% endif %}
+        </p>
+        <ul class="story-list">
+          {% for s in stories %}{{ story_row(s, show_era=false) }}{% endfor %}
+        </ul>
+      {% else %}
+        <p class="meta">No stories about {{ person.first }} yet.</p>
+      {% endif %}
+    </section>
+
+    {% if ask %}
+      <aside class="prompt" aria-labelledby="ask-heading">
+        <h2 id="ask-heading">Ask about {{ person.first }}</h2>
+        <p>{{ ask.text }}</p>
+        <a class="button button-small" href="{{ url_for('add_memory', ask=ask.person.id, about=person.id) }}">Ask</a>
+      </aside>
+    {% endif %}
+
+  </main>
+
+{% endblock %}

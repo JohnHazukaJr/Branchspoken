@@ -1,0 +1,9 @@
+<nav aria-label="Main">
+    <ul>
+      <li><a href="{{ url_for('tree') }}"{% if request.endpoint == 'tree' %} aria-current="page"{% endif %}>Tree</a></li>
+      <li><a href="{{ url_for('stories') }}"{% if request.endpoint == 'stories' %} aria-current="page"{% endif %}>Stories</a></li>
+      <li><a href="{{ url_for('add_memory') }}">Add a memory</a></li>
+      <li><a href="{{ url_for('family_map') }}"{% if request.endpoint == 'family_map' %} aria-current="page"{% endif %}>Map</a></li>
+      <li><a href="{{ url_for('family') }}"{% if request.endpoint == 'family' %} aria-current="page"{% endif %}>Family</a></li>
+    </ul>
+  </nav>

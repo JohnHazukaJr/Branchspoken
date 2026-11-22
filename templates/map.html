@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Map | Branch Spoken{% endblock %}
+{% block body_class %}page-map{% endblock %}
+
+{% block content %}
+
+  <main>
+
+    <figure class="map-view" aria-label="Map of where the family comes from">
+
+      <svg class="journeys" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        {% for j in journeys %}
+          <path class="journey-{{ j.side }}" d="{{ j.path }}" />
+        {% endfor %}
+      </svg>
+
+      <ul class="pins">
+        {% for p in places %}
+          <li class="pin pin-{{ 'home' if p.side == 'both' else p.side }}" style="--x: {{ p.x }}%; --y: {{ p.y }}%;">
+            <a href="#{{ p.id }}">{{ p.short }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+
+    </figure>
+
+    <section class="sheet" aria-labelledby="places-heading">
+      <h1 id="places-heading">Where you come from</h1>
+      <p class="meta">
+        {{ summary.homelands }} homelands &middot; {{ summary.journeys }} journeys &middot;
+        about {{ "{:,}".format(summary.miles) }} miles
+      </p>
+
+      <ul class="place-list">
+        {% for p in places %}
+          <li class="place-{{ 'home' if p.side == 'both' else p.side }}" id="{{ p.id }}">
+            <div>
+              <h2>{{ p.name }}</h2>
+              <p>{{ p.families }}{% if p.years %} &middot; {{ p.years }}{% endif %}</p>
+            </div>
+            {% if p.story_count %}
+              <a href="{{ url_for('stories', place=p.id) }}">{{ p.story_count }} {{ "story" if p.story_count == 1 else "stories" }}</a>
+            {% else %}
+              <span class="meta">No stories yet</span>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+
+      <h2 class="eyebrow" id="journeys-heading">Journeys</h2>
+      <ol class="journey-list" aria-labelledby="journeys-heading">
+        {% for j in journeys %}
+          <li>
+            <time datetime="{{ j.year }}">{{ j.year }}</time>
+            {% if j.story %}
+              <a href="{{ url_for('story', story_id=j.story.id) }}">{{ j.text }}</a>
+            {% else %}
+              {{ j.text }}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+
+  </main>
+
+{% endblock %}

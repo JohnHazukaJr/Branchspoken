@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}The shoebox | Branch Spoken{% endblock %}
+{% block body_class %}page-archive{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/filters.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+
+  <main>
+
+    <header class="page-head archive-head">
+      <div>
+        <p class="eyebrow">Archive</p>
+        <h1>The shoebox</h1>
+      </div>
+      <a class="button button-small" href="/archive/scan">Scan</a>
+    </header>
+
+    <nav class="filters" aria-label="Filter the archive">
+      <a href="{{ url_for('archive') }}" aria-current="page">All &middot; {{ items|length }}</a>
+      {% for kind, label in [("photo", "Photos"), ("record", "Records"), ("letter", "Letters"), ("document", "Documents")] %}
+        {% if counts[kind] %}
+          <a href="{{ url_for('archive', type=kind) }}">{{ label }} &middot; {{ counts[kind] }}</a>
+        {% endif %}
+      {% endfor %}
+    </nav>
+
+    <ul class="archive-grid">
+      {% for item in items %}
+        <li>
+          <figure>
+            <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.alt }}">
+            <figcaption>{{ item.kind|capitalize }}</figcaption>
+          </figure>
+          <h2><a href="/records/{{ item.id }}">{{ item.title }}</a></h2>
+          <p>{{ item.year }} &middot; {{ item.people }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% if waiting %}
+      <aside class="waiting" aria-labelledby="waiting-heading">
+        <p class="eyebrow" id="waiting-heading">Story waiting in a record</p>
+        <p>{{ waiting.waiting }}</p>
+        <a class="button button-small" href="/write?from={{ waiting.id }}">Draft it</a>
+      </aside>
+    {% endif %}
+
+  </main>
+
+{% endblock %}

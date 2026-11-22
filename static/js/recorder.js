@@ -17,16 +17,8 @@ const questionHeading = document.querySelector('#question-heading');
 const questionInput = document.querySelector('input[name="question"]');
 const [followUpButton, skipButton] = document.querySelectorAll('.question .button');
 
-const questions = [
-  'Where did you grow up?',
-  'What did your house smell like on a Sunday?',
-  'What song did your mother sing while she cooked?',
-  'Who was your best friend when you were ten?',
-  'What was your first job, and what did it pay?',
-  'How did you meet the person you married?',
-  "What's something your parents never knew about you?",
-  'What do you want your great-grandchildren to know?'
-];
+// the interview questions come from the server, on the question section
+const questions = JSON.parse(document.querySelector('.question').dataset.questions);
 
 const followUps = [
   'Can you tell me more about that?',

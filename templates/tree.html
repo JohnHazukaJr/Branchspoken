@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% from "partials/stories.html" import byline %}
+
+{% block title %}Family tree | Branch Spoken{% endblock %}
+{% block body_class %}page-tree{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/tree.js') }}" defer></script>
+{% endblock %}
+
+{# one person or couple on the tree #}
+{% macro node(n, tag="div", extra="") %}
+  <{{ tag }} class="node{% if n.people|length == 2 %} couple{% endif %}{% if n.is_viewer %} you{% endif %}{{ extra }}">
+    <span class="names">
+      {%- for p in n.people -%}
+        {% if not loop.first %} &amp; {% endif %}<a href="{{ url_for('relative', person_id=p.id) }}">{% if n.is_viewer %}You &middot; {% endif %}{{ p.first }}</a>
+      {%- endfor -%}
+    </span>
+    <span class="years">{{ n.years }}</span>
+    {% if n.story_count %}<span class="count">{{ n.story_count }} {{ "story" if n.story_count == 1 else "stories" }}</span>{% endif %}
+  </{{ tag }}>
+{% endmacro %}
+
+{# a node and everyone below it #}
+{% macro branch(n) %}
+  <li>
+    {{ node(n) }}
+    {% if n.children %}
+      <ul>
+        {% for child in n.children %}{{ branch(child) }}{% endfor %}
+      </ul>
+    {% endif %}
+  </li>
+{% endmacro %}
+
+{% block content %}
+
+  <header class="app-header">
+    <form>
+      <label class="visually-hidden" for="family">Family tree</label>
+      <select id="family" name="family">
+        {% for family_id, f in families.items() %}
+          <option value="{{ family_id }}"{% if family_id == tree.id %} selected{% endif %}>{{ f.name }}</option>
+        {% endfor %}
+      </select>
+    </form>
+
+    <h1>{{ tree.people_count }} people &middot; {{ tree.story_count }} stories</h1>
+
+    <a class="add" href="{{ url_for('add_memory') }}" aria-label="Add a memory">+</a>
+  </header>
+
+  <main>
+
+    <section aria-labelledby="tree-heading">
+      <h2 class="visually-hidden" id="tree-heading">Family tree</h2>
+
+      {% for b in tree.branches %}
+        <section class="branch branch-{{ b.side }}" aria-labelledby="branch-{{ b.side }}">
+          <h3 id="branch-{{ b.side }}">{{ b.title }}</h3>
+          <ul class="tree">
+            {{ branch(b.root) }}
+          </ul>
+        </section>
+      {% endfor %}
+
+      {% if tree.meet %}
+        <section class="branch branch-meet" aria-labelledby="branches-meet">
+          <h3 id="branches-meet">Where the branches meet</h3>
+          {{ node(tree.meet.couple, tag="p", extra=" meet") }}
+          <ul class="tree joined">
+            {% for child in tree.meet.couple.children %}
+              <li>{{ node(child) }}</li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endif %}
+
+      <p class="tree-hint">Each leaf is a story.</p>
+      <a class="see-all" href="{{ url_for('timeline') }}">See the family timeline</a>
+    </section>
+
+    <section class="latest" aria-labelledby="latest-heading">
+      <h2 id="latest-heading">Latest from each branch</h2>
+
+      {% for s in tree.latest %}
+        <article>
+          <h3><a href="{{ url_for('story', story_id=s.id) }}">{{ s.title }}</a></h3>
+          <p class="excerpt">{{ s.excerpt }}</p>
+          <p>{{ byline(s) }}</p>
+          <p>About
+            {%- for p in s.subjects %} <a href="{{ url_for('relative', person_id=p.id) }}">{{ p.first }}</a>{% if not loop.last %},{% endif %}{% endfor %}
+          </p>
+          <p><time datetime="{{ s.year }}">{{ s.era }}</time></p>
+        </article>
+      {% endfor %}
+
+      <a class="see-all" href="{{ url_for('stories') }}">See all stories</a>
+    </section>
+
+  </main>
+
+{% endblock %}

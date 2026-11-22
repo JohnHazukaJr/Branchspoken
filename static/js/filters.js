@@ -25,6 +25,8 @@ function typeFromLink(link) {
 let emptyMessage = null;
 
 function showEmptyMessage(show) {
+  if (items.length === 0) return;
+
   if (!emptyMessage) {
     emptyMessage = document.createElement('p');
     emptyMessage.className = 'empty-message';
@@ -56,7 +58,7 @@ function applyFilters() {
   if (showing) {
     showing.textContent = currentType || search
       ? `${visible} matching ${visible === 1 ? 'story' : 'stories'}`
-      : `Showing ${visible} of 32`;
+      : `Showing all ${visible}`;
   }
 
   showEmptyMessage(visible === 0);

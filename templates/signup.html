@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plant your tree | Branch Spoken</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="page-auth">
+{% extends "base.html" %}
+
+{% block title %}Plant your tree | Branch Spoken{% endblock %}
+{% block body_class %}page-auth{% endblock %}
+
+{% block tabbar %}{% endblock %}
+
+{% block content %}
 
   <header>
-    <a class="back" href="index.html" aria-label="Back to welcome page">Back</a>
+    <a class="back" href="{{ url_for('welcome') }}" aria-label="Back to welcome page">Back</a>
   </header>
 
   <main>
@@ -72,10 +68,9 @@
       </form>
     </section>
 
-    <p class="fine-print">Already have an account? <a href="login.html">Sign in</a></p>
-    <p class="fine-print">Got an invite from family? <a href="join.html">Join their tree</a></p>
+    <p class="fine-print">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
+    <p class="fine-print">Got an invite from family? <a href="{{ url_for('join') }}">Join their tree</a></p>
 
   </main>
 
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% from "partials/stories.html" import story_row %}
+
+{% block title %}Stories | Branch Spoken{% endblock %}
+{% block body_class %}page-stories{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/filters.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+
+  <main>
+
+    <header class="page-head">
+      <p class="eyebrow">Stories</p>
+      {% if place %}
+        <h1>Stories from {{ place.short }}</h1>
+        <p class="meta"><a href="{{ url_for('stories') }}">See all {{ total }} stories</a></p>
+      {% else %}
+        <h1>{{ total }} stories, {{ teller_count }} storytellers</h1>
+      {% endif %}
+    </header>
+
+    <form class="search" action="{{ url_for('stories') }}" method="get" role="search">
+      <label class="visually-hidden" for="q">Search stories</label>
+      <input type="search" id="q" name="q" placeholder="Search by name, place or year">
+      <button class="button button-small" type="submit">Search</button>
+    </form>
+
+    <nav class="filters" aria-label="Filter stories">
+      <a href="{{ url_for('stories') }}" aria-current="page">All</a>
+      {% for type in ["voice", "photo", "record", "text"] %}
+        <a href="{{ url_for('stories', type=type) }}">{{ type|capitalize }}</a>
+      {% endfor %}
+    </nav>
+
+    {% if not place %}
+      <section class="shortcuts" aria-label="Other ways to explore">
+        <a href="{{ url_for('timeline') }}">
+          <span class="eyebrow">Timeline</span>
+          Two branches, one century
+        </a>
+        <a href="{{ url_for('archive') }}">
+          <span class="eyebrow">Archive</span>
+          The shoebox
+        </a>
+      </section>
+    {% endif %}
+
+    <section aria-labelledby="recent-heading">
+      <h2 class="eyebrow" id="recent-heading">Recently added</h2>
+
+      {% if stories %}
+        <ul class="story-list">
+          {% for s in stories %}{{ story_row(s) }}{% endfor %}
+        </ul>
+      {% else %}
+        <p class="empty-message">No stories from here yet.</p>
+      {% endif %}
+
+      <p class="meta showing">Showing all {{ stories|length }}</p>
+    </section>
+
+  </main>
+
+{% endblock %}

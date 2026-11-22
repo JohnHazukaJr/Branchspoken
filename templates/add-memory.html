@@ -1,43 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Record a memory | Branch Spoken</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="js/recorder.js" defer></script>
-</head>
-<body class="page-record">
+{% extends "base.html" %}
+
+{% block title %}Record a memory | Branch Spoken{% endblock %}
+{% block body_class %}page-record{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/recorder.js') }}" defer></script>
+{% endblock %}
+
+{% block tabbar %}{% endblock %}
+
+{% block content %}
 
   <main>
 
-    <form action="add-memory.html" method="post" enctype="multipart/form-data">
+    <form action="{{ url_for('add_memory') }}" method="post" enctype="multipart/form-data">
 
       <header class="record-bar">
-        <a href="tree.html">Cancel</a>
+        <a href="{{ url_for('tree') }}">Cancel</a>
         <p class="timer" role="timer" aria-label="Recording time">0:00</p>
         <button class="done" type="submit">Done</button>
       </header>
 
       <section class="recording-who" aria-labelledby="recording-heading">
-        <h1 id="recording-heading">Recording Grandpa Henry</h1>
+        {% set current = options|selectattr("person.id", "equalto", chosen)|first %}
+        <h1 id="recording-heading">Recording
+          {%- if current.relation == "grandfather" %} Grandpa {{ current.person.first }}
+          {%- elif current.relation == "grandmother" %} Grandma {{ current.person.first }}
+          {%- else %} {{ current.person.first }}{% endif -%}
+        </h1>
 
         <label for="storyteller">Who is telling the story?</label>
         <select id="storyteller" name="storyteller">
-          <option value="henry" selected>Henry Sullivan, your grandfather</option>
-          <option value="margaret">Margaret Sullivan, your grandmother</option>
-          <option value="walter">Walter Miller, your grandfather</option>
+          {% for o in options %}
+            <option value="{{ o.person.id }}"{% if o.person.id == chosen %} selected{% endif %}>{{ o.person.name }}, your {{ o.relation }}</option>
+          {% endfor %}
           <option value="me">Me, I'm telling it myself</option>
         </select>
+        {% if request.args.reply %}
+          <input type="hidden" name="reply" value="{{ request.args.reply }}">
+        {% endif %}
       </section>
 
-      <section class="question" aria-labelledby="question-heading">
-        <p class="eyebrow">Question 3 of 8</p>
-        <h2 id="question-heading">What song did your mother sing while she cooked?</h2>
-        <input type="hidden" name="question" value="3">
+      <section class="question" aria-labelledby="question-heading" data-questions="{{ questions|tojson|forceescape }}">
+        <p class="eyebrow">Question 1 of {{ questions|length }}</p>
+        <h2 id="question-heading">{{ questions[0] }}</h2>
+        <input type="hidden" name="question" value="1">
 
         <button class="button button-ghost" type="button">Ask a follow-up</button>
         <button class="button button-ghost" type="button">Skip</button>
@@ -75,23 +82,10 @@
       <fieldset class="chips">
         <legend>Who is this story about?</legend>
 
-        <input type="checkbox" id="about-henry" name="about" value="henry" checked>
-        <label for="about-henry">Henry</label>
-
-        <input type="checkbox" id="about-margaret" name="about" value="margaret">
-        <label for="about-margaret">Margaret</label>
-
-        <input type="checkbox" id="about-anne" name="about" value="anne">
-        <label for="about-anne">Anne</label>
-
-        <input type="checkbox" id="about-patrick" name="about" value="patrick">
-        <label for="about-patrick">Patrick</label>
-
-        <input type="checkbox" id="about-ruth" name="about" value="ruth">
-        <label for="about-ruth">Ruth</label>
-
-        <input type="checkbox" id="about-walter" name="about" value="walter">
-        <label for="about-walter">Walter</label>
+        {% for p in people %}
+          <input type="checkbox" id="about-{{ p.id }}" name="about" value="{{ p.id }}"{% if p.id in about %} checked{% endif %}>
+          <label for="about-{{ p.id }}">{{ p.first }}</label>
+        {% endfor %}
       </fieldset>
 
       <section aria-labelledby="photo-heading">
@@ -104,9 +98,8 @@
 
     </form>
 
-    <p class="fine-print">Rather write it down? <a href="write-memory.html">Write a story instead</a></p>
+    <p class="fine-print">Rather write it down? <a href="/write">Write a story instead</a></p>
 
   </main>
 
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Branch Spoken{% endblock %}
+{% block body_class %}page-welcome{% endblock %}
+
+{% block tabbar %}{% endblock %}
+
+{% block content %}
+
+  <main>
+
+    <figure class="hero">
+      <img src="{{ url_for('static', filename='images/welcome.jpg') }}" alt="Three generations of a family sharing a meal at a long table">
+    </figure>
+
+    <section aria-labelledby="welcome-heading">
+      <p class="brand">Branch Spoken</p>
+      <h1 id="welcome-heading">Every family is a story still being told.</h1>
+      <p class="lead">Gather the voices, photos and memories of the people who made you, together, in one growing tree.</p>
+
+      <a class="button" href="{{ url_for('signup') }}">Plant your tree</a>
+      <a class="button button-outline" href="{{ url_for('join') }}">I was invited by family</a>
+    </section>
+
+    <p class="fine-print">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
+
+  </main>
+
+{% endblock %}

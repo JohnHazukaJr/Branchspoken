@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Timeline | Branch Spoken{% endblock %}
+{% block body_class %}page-timeline{% endblock %}
+
+{% block content %}
+
+  <header>
+    <a class="back" href="{{ url_for('tree') }}" aria-label="Back to the family tree">Back</a>
+  </header>
+
+  <main>
+
+    <section aria-labelledby="timeline-heading">
+      <p class="eyebrow">Timeline</p>
+      <h1 id="timeline-heading">Two branches, one century</h1>
+
+      <div class="timeline-heads">
+        <p class="side-sullivan">Sullivan &middot; Boston</p>
+        <p class="side-miller">Miller &middot; Minneapolis</p>
+      </div>
+
+      <ol class="timeline">
+        {% for e in entries %}
+          <li class="side-{{ e.side }}"{% if e.anchor %} id="{{ e.anchor }}"{% endif %}>
+            <time datetime="{{ e.year }}">{{ e.year }}</time>
+            <div class="event">
+              <h2>
+                {%- if e.url_person -%}
+                  <a href="{{ url_for('relative', person_id=e.url_person) }}">{{ e.title }}</a>
+                {%- elif e.story -%}
+                  <a href="{{ url_for('story', story_id=e.story) }}">{{ e.title }}</a>
+                {%- else -%}
+                  {{ e.title }}
+                {%- endif -%}
+              </h2>
+              <p>{{ e.note }}</p>
+            </div>
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    <a class="jump" href="#married-1994">Where the branches meet &middot; 1994</a>
+
+  </main>
+
+{% endblock %}

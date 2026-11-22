@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Family | Branch Spoken{% endblock %}
+{% block body_class %}page-family{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/invite.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+
+  <main>
+
+    <header class="page-head">
+      <p class="eyebrow">Family</p>
+      <h1>{{ members|length }} people tending this tree</h1>
+    </header>
+
+    <section class="invite" aria-labelledby="invite-heading">
+      <h2 id="invite-heading">Invite someone who remembers.</h2>
+      <p>They can add stories by voice. No account setup for grandparents.</p>
+
+      <form action="{{ url_for('family') }}" method="post">
+        <div>
+          <label for="invite-name">Their name</label>
+          <input type="text" id="invite-name" name="name" placeholder="Margaret Sullivan" required>
+        </div>
+
+        <div>
+          <label for="invite-relationship">How are they related to you?</label>
+          <select id="invite-relationship" name="relationship">
+            <option value="grandparent">Grandparent</option>
+            <option value="parent">Parent</option>
+            <option value="aunt-uncle">Aunt or uncle</option>
+            <option value="sibling">Brother or sister</option>
+            <option value="cousin">Cousin</option>
+            <option value="other">Someone else</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="invite-contact">Email or phone number</label>
+          <input type="text" id="invite-contact" name="contact" placeholder="name@example.com" required>
+        </div>
+
+        <button type="submit">Send invite</button>
+      </form>
+
+      <div class="invite-link">
+        <label for="invite-url">Or share this link</label>
+        <input type="text" id="invite-url" value="branchspoken.com/join?code={{ invite_code }}" readonly>
+        <button class="button button-outline" type="button">Copy link</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="members-heading">
+      <h2 class="eyebrow" id="members-heading">Members</h2>
+
+      <ul class="member-list">
+        {% for m in members %}
+          <li{% if m.role == "pending" %} class="pending"{% endif %}>
+            <div>
+              <h3><a href="{{ url_for('relative', person_id=m.person.id) }}">{{ m.person.name }}</a></h3>
+              <p>{{ m.relation }} &middot; {{ m.detail }}</p>
+            </div>
+            <span class="role{% if m.role != 'pending' %} role-{{ m.role }}{% endif %}">{{ m.role|capitalize }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section aria-labelledby="roles-heading">
+      <h2 class="eyebrow" id="roles-heading">What the roles mean</h2>
+      <dl class="role-guide">
+        <dt><span class="role role-keeper">Keeper</span></dt>
+        <dd>Started the tree. Can invite people and change anyone's role.</dd>
+
+        <dt><span class="role role-editor">Editor</span></dt>
+        <dd>Adds relatives and fixes names, dates and places on their branch.</dd>
+
+        <dt><span class="role role-storyteller">Storyteller</span></dt>
+        <dd>Adds and tells stories, and tags who they're about.</dd>
+      </dl>
+    </section>
+
+  </main>
+
+{% endblock %}

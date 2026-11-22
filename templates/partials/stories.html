@@ -1,0 +1,24 @@
+{# "Told by Carol, her daughter" or "Narrated from her birth record" #}
+{% macro byline(s) -%}
+  {%- if s.teller -%}
+    {{ s.verb }} <a href="{{ url_for('relative', person_id=s.teller.id) }}">{{ s.teller.first }}</a>
+    {%- if s.teller_role %}, {{ s.teller_role }}{% endif %}
+  {%- elif s.narrated -%}
+    {{ s.narrated }}
+  {%- endif -%}
+{%- endmacro %}
+
+{# one row in a list of stories, with its colored type tile #}
+{% macro story_row(s, show_era=true) %}
+  <li>
+    <article>
+      <p class="type type-{{ s.type }}">{{ s.type|capitalize }}</p>
+      <h3><a href="{{ url_for('story', story_id=s.id) }}">{{ s.title }}</a></h3>
+      <p>
+        {{- byline(s) -}}
+        {% if show_era %} &middot; {{ s.era }}{% endif %}
+        {%- if s.minutes %} &middot; {{ s.minutes }} min{% elif s.detail %} &middot; {{ s.detail }}{% endif -%}
+      </p>
+    </article>
+  </li>
+{% endmacro %}
