@@ -4,12 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Family tree | Branch Spoken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="page-tree">
 
-  <header>
+  <header class="app-header">
     <form>
-      <label for="family">Family tree</label>
+      <label class="visually-hidden" for="family">Family tree</label>
       <select id="family" name="family">
         <option value="miller" selected>The Miller Family</option>
         <option value="sullivan">The Sullivan Family</option>
@@ -18,62 +22,78 @@
 
     <h1>14 people &middot; 32 stories</h1>
 
-    <a href="add-memory.html" aria-label="Add a memory">+</a>
+    <a class="add" href="add-memory.html" aria-label="Add a memory">+</a>
   </header>
 
   <main>
 
     <section aria-labelledby="tree-heading">
-      <h2 id="tree-heading">Family tree</h2>
+      <h2 class="visually-hidden" id="tree-heading">Family tree</h2>
 
-      <section aria-labelledby="millers">
+      <section class="branch branch-miller" aria-labelledby="millers">
         <h3 id="millers">The Millers</h3>
-        <ul>
+        <ul class="tree">
           <li>
-            <a href="relative.html?id=walter">Walter</a> &amp; <a href="relative.html?id=ruth">Ruth</a>
-            <span>b. 1927 &middot; b. 1931</span>
-            <span>9 stories</span>
+            <div class="node couple">
+              <span class="names"><a href="relative.html?id=walter">Walter</a> &amp; <a href="relative.html?id=ruth">Ruth</a></span>
+              <span class="years">b. 1927 &middot; b. 1931</span>
+              <span class="count">9 stories</span>
+            </div>
             <ul>
               <li>
-                <a href="relative.html?id=carol">Carol</a>
-                <span>b. 1955</span>
+                <div class="node">
+                  <span class="names"><a href="relative.html?id=carol">Carol</a></span>
+                  <span class="years">b. 1955</span>
+                </div>
                 <ul>
                   <li>
-                    <a href="relative.html?id=emily">Emily</a>
-                    <span>b. 1984</span>
+                    <div class="node">
+                      <span class="names"><a href="relative.html?id=emily">Emily</a></span>
+                      <span class="years">b. 1984</span>
+                    </div>
                   </li>
                 </ul>
               </li>
               <li>
-                <a href="relative.html?id=thomas">Thomas</a>
-                <span>b. 1958</span>
-                <span>4 stories</span>
+                <div class="node">
+                  <span class="names"><a href="relative.html?id=thomas">Thomas</a></span>
+                  <span class="years">b. 1958</span>
+                  <span class="count">4 stories</span>
+                </div>
               </li>
             </ul>
           </li>
         </ul>
       </section>
 
-      <section aria-labelledby="sullivans">
+      <section class="branch branch-sullivan" aria-labelledby="sullivans">
         <h3 id="sullivans">The Sullivans</h3>
-        <ul>
+        <ul class="tree">
           <li>
-            <a href="relative.html?id=henry">Henry</a> &amp; <a href="relative.html?id=margaret">Margaret</a>
-            <span>b. 1932 &middot; b. 1936</span>
-            <span>17 stories</span>
+            <div class="node couple">
+              <span class="names"><a href="relative.html?id=henry">Henry</a> &amp; <a href="relative.html?id=margaret">Margaret</a></span>
+              <span class="years">b. 1932 &middot; b. 1936</span>
+              <span class="count">17 stories</span>
+            </div>
             <ul>
               <li>
-                <a href="relative.html?id=anne">Anne</a>
-                <span>b. 1961</span>
-                <span>6 stories</span>
+                <div class="node">
+                  <span class="names"><a href="relative.html?id=anne">Anne</a></span>
+                  <span class="years">b. 1961</span>
+                  <span class="count">6 stories</span>
+                </div>
               </li>
               <li>
-                <a href="relative.html?id=patrick">Patrick</a>
-                <span>b. 1964</span>
+                <div class="node">
+                  <span class="names"><a href="relative.html?id=patrick">Patrick</a></span>
+                  <span class="years">b. 1964</span>
+                </div>
                 <ul>
                   <li>
-                    <a href="relative.html?id=sean">Sean</a>
-                    <span>b. 1992</span>
+                    <div class="node">
+                      <span class="names"><a href="relative.html?id=sean">Sean</a></span>
+                      <span class="years">b. 1992</span>
+                    </div>
                   </li>
                 </ul>
               </li>
@@ -82,33 +102,37 @@
         </ul>
       </section>
 
-      <section aria-labelledby="branches-meet">
+      <section class="branch branch-meet" aria-labelledby="branches-meet">
         <h3 id="branches-meet">Where the branches meet</h3>
-        <p>
-          <a href="relative.html?id=thomas">Thomas</a> &amp; <a href="relative.html?id=anne">Anne</a>,
-          married <time datetime="1994">1994</time>
+        <p class="node couple meet">
+          <span class="names"><a href="relative.html?id=thomas">Thomas</a> &amp; <a href="relative.html?id=anne">Anne</a></span>
+          <span class="years">married <time datetime="1994">1994</time></span>
         </p>
-        <ul>
+        <ul class="tree joined">
           <li>
-            <a href="relative.html?id=daniel">You &middot; Daniel</a>
-            <span>b. 1996</span>
+            <div class="node you">
+              <span class="names"><a href="relative.html?id=daniel">You &middot; Daniel</a></span>
+              <span class="years">b. 1996</span>
+            </div>
           </li>
           <li>
-            <a href="relative.html?id=claire">Claire</a>
-            <span>b. 1999</span>
+            <div class="node">
+              <span class="names"><a href="relative.html?id=claire">Claire</a></span>
+              <span class="years">b. 1999</span>
+            </div>
           </li>
         </ul>
       </section>
 
-      <p>Each leaf is a story.</p>
+      <p class="tree-hint">Each leaf is a story.</p>
     </section>
 
-    <section aria-labelledby="latest-heading">
+    <section class="latest" aria-labelledby="latest-heading">
       <h2 id="latest-heading">Latest from each branch</h2>
 
       <article>
         <h3><a href="story.html?id=lawn-mower">Fixing the lawn mower</a></h3>
-        <p>Dad spent a whole Saturday showing me how to clean the carburetor, and we still had to push it back to the garage.</p>
+        <p class="excerpt">Dad spent a whole Saturday showing me how to clean the carburetor, and we still had to push it back to the garage.</p>
         <p>Told by <a href="relative.html?id=thomas">Thomas</a>, his son</p>
         <p>About <a href="relative.html?id=thomas">Thomas</a>, <a href="relative.html?id=walter">Walter</a></p>
         <p><time datetime="1971">Summer 1971</time></p>
@@ -116,7 +140,7 @@
 
       <article>
         <h3><a href="story.html?id=leaving-boston">Leaving Boston</a></h3>
-        <p>We packed the station wagon the night before so we could leave before the sun came up.</p>
+        <p class="excerpt">We packed the station wagon the night before so we could leave before the sun came up.</p>
         <p>Told by <a href="relative.html?id=margaret">Margaret</a></p>
         <p>About <a href="relative.html?id=margaret">Margaret</a>, <a href="relative.html?id=henry">Henry</a>, <a href="relative.html?id=anne">Anne</a></p>
         <p><time datetime="1967">1967</time></p>
@@ -124,13 +148,13 @@
 
       <article>
         <h3><a href="story.html?id=ruths-first-winter">Ruth's first winter up north</a></h3>
-        <p>She had one wool coat and swore she would never get used to the snow.</p>
+        <p class="excerpt">She had one wool coat and swore she would never get used to the snow.</p>
         <p>Told by <a href="relative.html?id=carol">Carol</a>, her daughter</p>
         <p>About <a href="relative.html?id=ruth">Ruth</a></p>
         <p><time datetime="1952">Winter 1952</time></p>
       </article>
 
-      <a href="stories.html">See all stories</a>
+      <a class="see-all" href="stories.html">See all stories</a>
     </section>
 
   </main>

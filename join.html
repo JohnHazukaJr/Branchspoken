@@ -4,19 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Join your family | Branch Spoken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="page-auth">
 
   <header>
-    <a href="index.html" aria-label="Back to welcome page">Back</a>
+    <a class="back" href="index.html" aria-label="Back to welcome page">Back</a>
   </header>
 
   <main>
 
     <section aria-labelledby="join-heading">
-      <p>Branch Spoken</p>
+      <p class="brand">Branch Spoken</p>
       <h1 id="join-heading">Join your family's tree.</h1>
-      <p>Someone in your family saved you a spot. Enter the code from your invite to find it.</p>
+      <p class="lead">Someone in your family saved you a spot. Enter the code from your invite to find it.</p>
 
       <form method="get" aria-label="Find your invite">
         <div>
@@ -28,9 +32,9 @@
       </form>
     </section>
 
-    <section aria-labelledby="invite-heading">
+    <section class="card" aria-labelledby="invite-heading">
       <h2 id="invite-heading">Ruth Miller invited you to The Miller Family</h2>
-      <p>14 people &middot; 32 stories</p>
+      <p class="meta">14 people &middot; 32 stories</p>
       <p>You were added as <strong>Ruth's grandson</strong>.</p>
 
       <form method="post" aria-label="Create your account">
@@ -60,10 +64,10 @@
         <button type="submit">Join The Miller Family</button>
       </form>
 
-      <p>Not you? <a href="join.html">Use a different code</a></p>
+      <p class="fine-print">Not you? <a href="join.html">Use a different code</a></p>
     </section>
 
-    <p>Already have an account? <a href="login.html">Sign in</a> and the tree will be added to your account.</p>
+    <p class="fine-print">Already have an account? <a href="login.html">Sign in</a> and the tree will be added to your account.</p>
 
   </main>
 

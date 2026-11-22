@@ -4,20 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Record a memory | Branch Spoken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="page-record">
 
   <main>
 
     <form action="add-memory.html" method="post" enctype="multipart/form-data">
 
-      <header>
+      <header class="record-bar">
         <a href="tree.html">Cancel</a>
-        <p role="timer" aria-label="Recording time">2:18</p>
-        <button type="submit">Done</button>
+        <p class="timer" role="timer" aria-label="Recording time">2:18</p>
+        <button class="done" type="submit">Done</button>
       </header>
 
-      <section aria-labelledby="recording-heading">
+      <section class="recording-who" aria-labelledby="recording-heading">
         <h1 id="recording-heading">Recording Grandpa Henry</h1>
 
         <label for="storyteller">Who is telling the story?</label>
@@ -29,32 +33,32 @@
         </select>
       </section>
 
-      <section aria-labelledby="question-heading">
-        <p>Question 3 of 8</p>
+      <section class="question" aria-labelledby="question-heading">
+        <p class="eyebrow">Question 3 of 8</p>
         <h2 id="question-heading">What song did your mother sing while she cooked?</h2>
         <input type="hidden" name="question" value="3">
 
-        <button type="button">Ask a follow-up</button>
-        <button type="button">Skip</button>
+        <button class="button button-ghost" type="button">Ask a follow-up</button>
+        <button class="button button-ghost" type="button">Skip</button>
       </section>
 
-      <section aria-labelledby="record-heading">
-        <h2 id="record-heading">Record</h2>
+      <section class="record-controls" aria-labelledby="record-heading">
+        <h2 class="visually-hidden" id="record-heading">Record</h2>
 
-        <button type="button">Stop recording</button>
+        <button class="record-button" type="button">Stop recording</button>
 
         <label for="audio">Or upload a recording</label>
         <input type="file" id="audio" name="audio" accept="audio/*">
       </section>
 
       <section aria-labelledby="transcript-heading">
-        <h2 id="transcript-heading">Transcribing</h2>
+        <h2 class="eyebrow" id="transcript-heading">Transcribing</h2>
         <label for="transcript">Transcript (you can fix any mistakes)</label>
         <textarea id="transcript" name="transcript" rows="8">Oh, it was always "Down by the Salley Gardens." Her mother brought it over from County Clare. She'd sing it peeling potatoes, and if you came in the kitchen she'd stop, like you'd caught her at something. My sister Nora learned every word just by sitting on the back steps and listening.</textarea>
       </section>
 
       <section aria-labelledby="details-heading">
-        <h2 id="details-heading">Story details</h2>
+        <h2 class="eyebrow" id="details-heading">Story details</h2>
 
         <label for="title">Title</label>
         <input type="text" id="title" name="title" placeholder="Mom's kitchen song">
@@ -66,7 +70,7 @@
         <input type="text" id="place" name="place" placeholder="Boston, Massachusetts">
       </section>
 
-      <fieldset>
+      <fieldset class="chips">
         <legend>Who is this story about?</legend>
 
         <input type="checkbox" id="about-henry" name="about" value="henry" checked>
@@ -89,16 +93,16 @@
       </fieldset>
 
       <section aria-labelledby="photo-heading">
-        <h2 id="photo-heading">Add a photo</h2>
+        <h2 class="eyebrow" id="photo-heading">Add a photo</h2>
         <label for="photo">Photo or document</label>
         <input type="file" id="photo" name="photo" accept="image/*">
       </section>
 
-      <button type="submit">Save story</button>
+      <button class="button button-accent" type="submit">Save story</button>
 
     </form>
 
-    <p>Rather write it down? <a href="write-memory.html">Write a story instead</a></p>
+    <p class="fine-print">Rather write it down? <a href="write-memory.html">Write a story instead</a></p>
 
   </main>
 

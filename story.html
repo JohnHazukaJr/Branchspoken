@@ -4,25 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ruth's first winter up north | Branch Spoken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="page-story">
 
   <header>
-    <a href="relative.html?id=ruth" aria-label="Back to Ruth's page">Back</a>
-    <p>Story 1 of 6 about Ruth</p>
+    <a class="back" href="relative.html?id=ruth" aria-label="Back to Ruth's page">Back</a>
+    <p class="pager">Story 1 of 6 about Ruth</p>
   </header>
 
   <main>
 
     <article aria-labelledby="story-title">
 
-      <header>
-        <p>
+      <header class="story-head">
+        <p class="eyebrow eyebrow-accent">
           Told by <a href="relative.html?id=carol">Carol</a>, her daughter
           &middot; <time datetime="1952">Winter 1952</time>
         </p>
         <h1 id="story-title">Ruth's first winter up north</h1>
-        <p>About <a href="relative.html?id=ruth">Ruth</a>, <a href="relative.html?id=walter">Walter</a></p>
+        <p class="about">About <a href="relative.html?id=ruth">Ruth</a>, <a href="relative.html?id=walter">Walter</a></p>
       </header>
 
       <figure>
@@ -30,7 +34,7 @@
         <figcaption>Train ticket, Chicago to Minneapolis</figcaption>
       </figure>
 
-      <section aria-labelledby="listen-heading">
+      <section class="player" aria-labelledby="listen-heading">
         <h2 id="listen-heading">Listen</h2>
         <audio controls src="audio/ruths-first-winter.mp3">
           Your browser can't play this recording. You can still read it below.
@@ -38,7 +42,7 @@
         <p>Carol's voice &middot; 4 min 10 sec</p>
       </section>
 
-      <section aria-labelledby="transcript-heading">
+      <section class="transcript" aria-labelledby="transcript-heading">
         <h2 id="transcript-heading">Transcript</h2>
 
         <p>
@@ -66,7 +70,7 @@
         </p>
       </section>
 
-      <aside aria-labelledby="records-heading">
+      <aside class="note" aria-labelledby="records-heading">
         <h2 id="records-heading">From the records</h2>
         <p>
           The train name and date come from her ticket stub, and the address comes from the 1952 Minneapolis
@@ -80,13 +84,13 @@
 
     </article>
 
-    <section aria-labelledby="add-heading">
+    <section class="card" aria-labelledby="add-heading">
       <h2 id="add-heading">Remember it differently?</h2>
       <p>Add your side of this story. It will stay linked to Carol's.</p>
-      <a href="add-memory.html?about=ruth&amp;reply=ruths-first-winter">Add your version</a>
+      <a class="button button-outline" href="add-memory.html?about=ruth&amp;reply=ruths-first-winter">Add your version</a>
     </section>
 
-    <nav aria-label="More stories about Ruth">
+    <nav class="pager-nav" aria-label="More stories about Ruth">
       <a href="story.html?id=the-lake-cabin" rel="prev">Previous: The lake cabin</a>
       <a href="story.html?id=sunday-pot-roast" rel="next">Next: Sunday pot roast</a>
     </nav>

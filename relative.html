@@ -4,37 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ruth Miller | Branch Spoken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="page-relative">
 
   <header>
-    <a href="tree.html" aria-label="Back to the family tree">Back</a>
-    <a href="share.html?id=ruth">Share</a>
+    <a class="back" href="tree.html" aria-label="Back to the family tree">Back</a>
+    <a class="pill" href="share.html?id=ruth">Share</a>
   </header>
 
   <main>
 
-    <figure>
+    <figure class="portrait">
       <img src="images/ruth.jpg" alt="Portrait of Ruth Miller, around 1950">
       <figcaption>Ruth, c. 1950</figcaption>
     </figure>
 
     <section aria-labelledby="relative-name">
-      <p>Your grandmother &middot; father's side</p>
+      <p class="eyebrow">Your grandmother &middot; father's side</p>
       <h1 id="relative-name">Ruth Miller</h1>
-      <p>
+      <p class="lifespan">
         <time datetime="1931">1931</time> Springfield, Illinois
         &mdash;
         <time datetime="2019">2019</time> Minneapolis, Minnesota
       </p>
 
-      <a href="listen.html?id=ruth">Listen to her life &middot; 18 min</a>
-      <a href="add-memory.html?about=ruth" aria-label="Add a memory about Ruth">+</a>
+      <div class="actions">
+        <a class="button listen" href="listen.html?id=ruth">Listen to her life &middot; 18 min</a>
+        <a class="button button-outline square" href="add-memory.html?about=ruth" aria-label="Add a memory about Ruth">+</a>
+      </div>
     </section>
 
     <section aria-labelledby="family-heading">
       <h2 id="family-heading">Family</h2>
-      <dl>
+      <dl class="family-list">
         <dt>Husband</dt>
         <dd><a href="relative.html?id=walter">Walter Miller</a></dd>
 
@@ -51,47 +57,47 @@
 
     <section aria-labelledby="stories-heading">
       <h2 id="stories-heading">Her stories</h2>
-      <p>6 stories &middot; from 4 relatives</p>
+      <p class="meta">6 stories &middot; from 4 relatives</p>
 
-      <ul>
+      <ul class="story-list">
         <li>
           <article>
-            <p>Voice</p>
+            <p class="type type-voice">Voice</p>
             <h3><a href="story.html?id=ruths-first-winter">Ruth's first winter up north</a></h3>
             <p>Told by <a href="relative.html?id=carol">Carol</a>, her daughter &middot; 4 min</p>
           </article>
         </li>
         <li>
           <article>
-            <p>Photo</p>
+            <p class="type type-photo">Photo</p>
             <h3><a href="story.html?id=sunday-pot-roast">Sunday pot roast</a></h3>
             <p>Shared by <a href="relative.html?id=emily">Emily</a> &middot; photo and recipe card</p>
           </article>
         </li>
         <li>
           <article>
-            <p>Record</p>
+            <p class="type type-record">Record</p>
             <h3><a href="story.html?id=born-in-springfield">Born in Springfield</a></h3>
             <p>Narrated from her birth record</p>
           </article>
         </li>
         <li>
           <article>
-            <p>Voice</p>
+            <p class="type type-voice">Voice</p>
             <h3><a href="story.html?id=the-church-choir">The church choir</a></h3>
             <p>Told by <a href="relative.html?id=walter">Walter</a>, her husband &middot; 6 min</p>
           </article>
         </li>
         <li>
           <article>
-            <p>Text</p>
+            <p class="type type-text">Text</p>
             <h3><a href="story.html?id=letters-from-korea">Letters from Korea</a></h3>
             <p>Written by <a href="relative.html?id=thomas">Thomas</a>, her son</p>
           </article>
         </li>
         <li>
           <article>
-            <p>Photo</p>
+            <p class="type type-photo">Photo</p>
             <h3><a href="story.html?id=the-lake-cabin">The lake cabin</a></h3>
             <p>Shared by <a href="relative.html?id=carol">Carol</a> &middot; 12 photos</p>
           </article>
@@ -99,10 +105,10 @@
       </ul>
     </section>
 
-    <aside aria-labelledby="ask-heading">
+    <aside class="prompt" aria-labelledby="ask-heading">
       <h2 id="ask-heading">Ask about Ruth</h2>
       <p>Thomas is her son. Ask him about her first year in Minneapolis?</p>
-      <a href="add-memory.html?ask=thomas&amp;about=ruth">Ask</a>
+      <a class="button button-small" href="add-memory.html?ask=thomas&amp;about=ruth">Ask</a>
     </aside>
 
   </main>
