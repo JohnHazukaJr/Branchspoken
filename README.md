@@ -19,6 +19,13 @@ A place for families to keep the stories they tell about each other. Join your f
 
 ```
 branchspoken/
+├── js/
+│   ├── tree.js     # Switch between family trees
+│   ├── filters.js  # Filter and search stories and the archive
+│   ├── invite.js   # Copy the invite link
+│   ├── share.js    # Share a relative's page
+│   ├── story.js    # Follow the transcript while a story plays
+│   └── recorder.js # Record, time and transcribe interviews
 ├── css/
 │   └── style.css # Styles shared by every page
 ├── index.html    # Welcome page
@@ -33,6 +40,7 @@ branchspoken/
 ├── map.html      # Where the family comes from
 ├── family.html   # Invite relatives and see who is in the tree
 ├── archive.html  # The shoebox: old photos, records and letters
+├── stories.html  # Every story, with search and filters
 └── README.md
 ```
 

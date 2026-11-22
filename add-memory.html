@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/recorder.js" defer></script>
 </head>
 <body class="page-record">
 
@@ -17,7 +18,7 @@
 
       <header class="record-bar">
         <a href="tree.html">Cancel</a>
-        <p class="timer" role="timer" aria-label="Recording time">2:18</p>
+        <p class="timer" role="timer" aria-label="Recording time">0:00</p>
         <button class="done" type="submit">Done</button>
       </header>
 
@@ -45,16 +46,17 @@
       <section class="record-controls" aria-labelledby="record-heading">
         <h2 class="visually-hidden" id="record-heading">Record</h2>
 
-        <button class="record-button" type="button">Stop recording</button>
+        <button class="record-button" type="button" aria-pressed="false">Start recording</button>
+        <p class="record-status" aria-live="polite">Tap to start recording.</p>
 
         <label for="audio">Or upload a recording</label>
         <input type="file" id="audio" name="audio" accept="audio/*">
       </section>
 
       <section aria-labelledby="transcript-heading">
-        <h2 class="eyebrow" id="transcript-heading">Transcribing</h2>
+        <h2 class="eyebrow" id="transcript-heading">Transcript</h2>
         <label for="transcript">Transcript (you can fix any mistakes)</label>
-        <textarea id="transcript" name="transcript" rows="8">Oh, it was always "Down by the Salley Gardens." Her mother brought it over from County Clare. She'd sing it peeling potatoes, and if you came in the kitchen she'd stop, like you'd caught her at something. My sister Nora learned every word just by sitting on the back steps and listening.</textarea>
+        <textarea id="transcript" name="transcript" rows="8" placeholder="Their words will show up here as they talk."></textarea>
       </section>
 
       <section aria-labelledby="details-heading">
