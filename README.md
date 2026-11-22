@@ -31,6 +31,8 @@ branchspoken/
 ├── add-memory.html # Record a relative with guided interview questions
 ├── timeline.html # Both sides of the family on one timeline
 ├── map.html      # Where the family comes from
+├── family.html   # Invite relatives and see who is in the tree
+├── archive.html  # The shoebox: old photos, records and letters
 └── README.md
 ```
 
