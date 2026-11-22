@@ -1538,3 +1538,177 @@ nav[aria-label="Main"] li:nth-child(3) a:hover {
 .page-record .fine-print {
   color: var(--night-muted);
 }
+
+
+/* ==========================================================
+   Timeline (timeline.html)
+   ========================================================== */
+
+.page-timeline > header {
+  padding-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-timeline main {
+  padding-bottom: 10rem;
+}
+
+.page-timeline h1 {
+  margin-bottom: 1.5rem;
+}
+
+.timeline-heads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.timeline-heads p {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.timeline-heads .side-sullivan {
+  text-align: right;
+  color: var(--green);
+}
+
+.timeline-heads .side-miller {
+  color: var(--blue);
+}
+
+.timeline {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* the line down the middle */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--line);
+}
+
+.timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 3.5rem 1fr;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.timeline time {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  padding: 0.2rem 0;
+  background: var(--cream);
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.event {
+  grid-row: 1;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--paper);
+}
+
+.side-sullivan .event {
+  grid-column: 1;
+  border-right: 3px solid var(--green);
+  text-align: right;
+}
+
+.side-miller .event {
+  grid-column: 3;
+  border-left: 3px solid var(--blue);
+}
+
+.event h2 {
+  margin: 0 0 0.15rem;
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.event h2 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.event h2 a:hover {
+  color: var(--terracotta-dark);
+}
+
+.event p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* once the families join, events sit across the whole line */
+.timeline .side-both {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  padding-top: 0.5rem;
+}
+
+.side-both time {
+  grid-column: 1;
+  padding: 0.2rem 0.75rem;
+  color: var(--terracotta);
+}
+
+.side-both .event {
+  grid-column: 1;
+  grid-row: 2;
+  width: 75%;
+  border-color: var(--terracotta);
+  text-align: center;
+}
+
+.side-both#married-1994 .event {
+  border-width: 2px;
+  background: var(--peach);
+}
+
+.timeline li:target .event {
+  box-shadow: 0 0 0 4px rgb(184 103 63 / 0.25);
+}
+
+/* floating shortcut above the tab bar */
+.jump {
+  position: fixed;
+  left: 50%;
+  bottom: 5.5rem;
+  z-index: 5;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  background: var(--ink);
+  box-shadow: 0 6px 18px rgb(43 38 34 / 0.25);
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--cream);
+  text-decoration: none;
+  transform: translateX(-50%);
+}
+
+.jump:hover {
+  background: var(--ink-soft);
+  color: var(--cream);
+}
