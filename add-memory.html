@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record a memory | Branch Spoken</title>
+</head>
+<body>
+
+  <main>
+
+    <form action="add-memory.html" method="post" enctype="multipart/form-data">
+
+      <header>
+        <a href="tree.html">Cancel</a>
+        <p role="timer" aria-label="Recording time">2:18</p>
+        <button type="submit">Done</button>
+      </header>
+
+      <section aria-labelledby="recording-heading">
+        <h1 id="recording-heading">Recording Grandpa Henry</h1>
+
+        <label for="storyteller">Who is telling the story?</label>
+        <select id="storyteller" name="storyteller">
+          <option value="henry" selected>Henry Sullivan, your grandfather</option>
+          <option value="margaret">Margaret Sullivan, your grandmother</option>
+          <option value="walter">Walter Miller, your grandfather</option>
+          <option value="me">Me, I'm telling it myself</option>
+        </select>
+      </section>
+
+      <section aria-labelledby="question-heading">
+        <p>Question 3 of 8</p>
+        <h2 id="question-heading">What song did your mother sing while she cooked?</h2>
+        <input type="hidden" name="question" value="3">
+
+        <button type="button">Ask a follow-up</button>
+        <button type="button">Skip</button>
+      </section>
+
+      <section aria-labelledby="record-heading">
+        <h2 id="record-heading">Record</h2>
+
+        <button type="button">Stop recording</button>
+
+        <label for="audio">Or upload a recording</label>
+        <input type="file" id="audio" name="audio" accept="audio/*">
+      </section>
+
+      <section aria-labelledby="transcript-heading">
+        <h2 id="transcript-heading">Transcribing</h2>
+        <label for="transcript">Transcript (you can fix any mistakes)</label>
+        <textarea id="transcript" name="transcript" rows="8">Oh, it was always "Down by the Salley Gardens." Her mother brought it over from County Clare. She'd sing it peeling potatoes, and if you came in the kitchen she'd stop, like you'd caught her at something. My sister Nora learned every word just by sitting on the back steps and listening.</textarea>
+      </section>
+
+      <section aria-labelledby="details-heading">
+        <h2 id="details-heading">Story details</h2>
+
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" placeholder="Mom's kitchen song">
+
+        <label for="when">When did it happen?</label>
+        <input type="text" id="when" name="when" placeholder="1940s">
+
+        <label for="place">Where did it happen?</label>
+        <input type="text" id="place" name="place" placeholder="Boston, Massachusetts">
+      </section>
+
+      <fieldset>
+        <legend>Who is this story about?</legend>
+
+        <input type="checkbox" id="about-henry" name="about" value="henry" checked>
+        <label for="about-henry">Henry</label>
+
+        <input type="checkbox" id="about-margaret" name="about" value="margaret">
+        <label for="about-margaret">Margaret</label>
+
+        <input type="checkbox" id="about-anne" name="about" value="anne">
+        <label for="about-anne">Anne</label>
+
+        <input type="checkbox" id="about-patrick" name="about" value="patrick">
+        <label for="about-patrick">Patrick</label>
+
+        <input type="checkbox" id="about-ruth" name="about" value="ruth">
+        <label for="about-ruth">Ruth</label>
+
+        <input type="checkbox" id="about-walter" name="about" value="walter">
+        <label for="about-walter">Walter</label>
+      </fieldset>
+
+      <section aria-labelledby="photo-heading">
+        <h2 id="photo-heading">Add a photo</h2>
+        <label for="photo">Photo or document</label>
+        <input type="file" id="photo" name="photo" accept="image/*">
+      </section>
+
+      <button type="submit">Save story</button>
+
+    </form>
+
+    <p>Rather write it down? <a href="write-memory.html">Write a story instead</a></p>
+
+  </main>
+
+</body>
+</html>
