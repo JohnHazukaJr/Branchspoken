@@ -63,7 +63,7 @@
           {% endif %}
           <ul>
             {% for r in story.records %}
-              <li><a href="/records/{{ r.id }}">{{ r.title }}, {{ r.year }}</a></li>
+              <li><a href="{{ url_for('record', record_id=r.id) }}">{{ r.title }}, {{ r.year }}</a></li>
             {% endfor %}
           </ul>
         </aside>

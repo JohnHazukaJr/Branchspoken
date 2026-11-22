@@ -106,7 +106,7 @@ def _length(seconds):
     return f"{minutes} min" if minutes else f"{seconds} sec"
 
 
-def save_memory(form, files, teller_id, subjects, places):
+def save_memory(form, files, teller_id, subjects, places, record_id=None):
     """Create a story from the recorder form. Returns the new story's id.
 
     teller_id and subjects must already be checked as people the viewer can see.
@@ -149,5 +149,9 @@ def save_memory(form, files, teller_id, subjects, places):
             cur.execute(
                 "INSERT INTO story_subjects (story_id, person_id, position) VALUES (%s, %s, %s)",
                 (story_id, person_id, position))
+        if record_id:
+            cur.execute(
+                "INSERT INTO story_records (story_id, record_id, position) VALUES (%s, %s, 0)",
+                (story_id, record_id))
     conn.commit()
     return story_id

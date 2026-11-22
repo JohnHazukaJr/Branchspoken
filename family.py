@@ -473,9 +473,29 @@ def archive_counts():
     return counts
 
 
+def can_see_record(record_id):
+    record = RECORDS.get(record_id)
+    return bool(record) and record["family"] in VIEWER_FAMILIES
+
+
+def get_record(record_id):
+    """A record with the stories that draw on it and its neighbours in the shoebox."""
+    if not can_see_record(record_id):
+        return None
+    items = archive_items()
+    position = next(i for i, item in enumerate(items) if item["id"] == record_id)
+    return {
+        "record": items[position],
+        "stories": [s for s in all_stories() if record_id in [r["id"] for r in s["records"]]],
+        "previous": items[position - 1] if len(items) > 1 else None,
+        "next": items[(position + 1) % len(items)] if len(items) > 1 else None,
+    }
+
+
 def waiting_record():
+    used = {r["id"] for s in all_stories() for r in s["records"]}
     for record in archive_items():
-        if record.get("waiting"):
+        if record.get("waiting") and record["id"] not in used:
             return record
     return None
 

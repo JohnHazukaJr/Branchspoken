@@ -75,10 +75,12 @@ branchspoken/
 | `/stories` | All stories |
 | `/stories/<id>` | One story |
 | `/add-memory` | Record a memory |
+| `/write` | Write a story instead of recording it |
 | `/timeline` | Timeline |
 | `/map` | Map |
 | `/family` | Members and invites |
 | `/archive` | The shoebox |
+| `/records/<id>` | One photo, record or letter and the stories that use it |
 
 ## Run it
 

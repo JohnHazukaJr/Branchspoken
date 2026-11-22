@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Write a story | Branch Spoken{% endblock %}
+{% block body_class %}page-write{% endblock %}
+
+{% block tabbar %}{% endblock %}
+
+{% block content %}
+
+  <header>
+    <a class="back" href="{{ url_for('record', record_id=from_record.id) if from_record else url_for('stories') }}">Back</a>
+  </header>
+
+  <main>
+
+    <section aria-labelledby="write-heading">
+      <p class="eyebrow">Write a story</p>
+      <h1 id="write-heading">Put it in writing.</h1>
+      <p class="lead">Write it the way you'd tell it at the kitchen table. You can add more later.</p>
+    </section>
+
+    <form action="{{ url_for('write') }}" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+
+      {% if from_record %}
+        <p class="from-record">Writing about <strong>{{ from_record.title }}, {{ from_record.year }}</strong>.
+          It will be linked to the {{ from_record.kind }}.</p>
+        <input type="hidden" name="record" value="{{ from_record.id }}">
+      {% endif %}
+
+      <div>
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" placeholder="The winter Ruth came north" value="{{ form.title }}" maxlength="120" required>
+      </div>
+
+      <div>
+        <label for="story">Your story</label>
+        <textarea id="story" name="story" rows="12" placeholder="Start with what you remember most." required>{{ form.story }}</textarea>
+        <p>Leave a blank line between paragraphs.</p>
+      </div>
+
+      <div class="write-pair">
+        <div>
+          <label for="when">When did it happen?</label>
+          <input type="text" id="when" name="when" placeholder="Summer 1971" value="{{ form.when }}" maxlength="60">
+        </div>
+        <div>
+          <label for="place">Where?</label>
+          <input type="text" id="place" name="place" placeholder="Minneapolis" value="{{ form.place }}" maxlength="80">
+        </div>
+      </div>
+
+      <fieldset class="chips">
+        <legend>Who is this story about?</legend>
+        {% for p in people %}
+          <input type="checkbox" id="about-{{ p.id }}" name="about" value="{{ p.id }}"{% if p.id in about %} checked{% endif %}>
+          <label for="about-{{ p.id }}">{{ p.first }}</label>
+        {% endfor %}
+      </fieldset>
+
+      <div>
+        <label for="photo">Add a photo (optional)</label>
+        <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/gif,image/webp">
+      </div>
+
+      <button type="submit">Save story</button>
+    </form>
+
+    <p class="fine-print">Easier to say it out loud? <a href="{{ url_for('add_memory', storyteller='me') }}">Record it instead</a></p>
+
+  </main>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "partials/stories.html" import story_row %}
+
+{% block title %}{{ record.title }} | Branch Spoken{% endblock %}
+{% block body_class %}page-record-detail{% endblock %}
+
+{% block content %}
+
+  <header>
+    <a class="back" href="{{ url_for('archive') }}" aria-label="Back to the shoebox">Back</a>
+  </header>
+
+  <main>
+
+    <figure class="record-scan">
+      {% if record.image %}
+        <img src="{{ record.image|media_url }}" alt="{{ record.alt }}">
+      {% endif %}
+      <figcaption>{{ record.kind|capitalize }}</figcaption>
+    </figure>
+
+    <section aria-labelledby="record-title">
+      <p class="eyebrow">{{ record.kind|capitalize }} &middot; {{ record.year }}</p>
+      <h1 id="record-title">{{ record.title }}</h1>
+      <p class="lifespan">{{ record.people }}</p>
+    </section>
+
+    <section aria-labelledby="record-stories-heading">
+      <h2 id="record-stories-heading">Stories from this {{ record.kind }}</h2>
+      {% if stories %}
+        <ul class="story-list">
+          {% for s in stories %}{{ story_row(s) }}{% endfor %}
+        </ul>
+      {% else %}
+        <p class="meta">No stories use this {{ record.kind }} yet.</p>
+      {% endif %}
+    </section>
+
+    {% set waiting = record.waiting if not stories else none %}
+    <aside class="prompt" aria-labelledby="draft-heading">
+      <h2 id="draft-heading">{{ "Story waiting in this record" if waiting else "Know the story behind it?" }}</h2>
+      <p>{{ waiting or "Record or write what you remember, and it will be linked to this " ~ record.kind ~ "." }}</p>
+      <a class="button button-small" href="{{ url_for('write', record=record.id) }}">
+        {{- "Draft it" if waiting else "Add it" -}}
+      </a>
+    </aside>
+
+    {% if previous %}
+      <nav class="pager-nav" aria-label="More in the shoebox">
+        <a href="{{ url_for('record', record_id=previous.id) }}" rel="prev">Previous: {{ previous.title }}</a>
+        <a href="{{ url_for('record', record_id=next.id) }}" rel="next">Next: {{ next.title }}</a>
+      </nav>
+    {% endif %}
+
+  </main>
+
+{% endblock %}

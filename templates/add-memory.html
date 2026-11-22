@@ -24,6 +24,11 @@
 
       {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
 
+      {% if from_record %}
+        <p class="from-record">Drafting a story from <strong>{{ from_record.title }}, {{ from_record.year }}</strong></p>
+        <input type="hidden" name="record" value="{{ from_record.id }}">
+      {% endif %}
+
       <section class="recording-who" aria-labelledby="recording-heading">
         {% set matches = options|selectattr("person.id", "equalto", chosen)|list %}
         {% set current = matches[0] if matches else none %}
@@ -104,7 +109,7 @@
 
     </form>
 
-    <p class="fine-print">Rather write it down? <a href="/write">Write a story instead</a></p>
+    <p class="fine-print">Rather write it down? <a href="{{ url_for('write') }}">Write a story instead</a></p>
 
   </main>
 

@@ -32,10 +32,10 @@
       {% for item in items %}
         <li>
           <figure>
-            <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.alt }}">
+            <img src="{{ item.image|media_url }}" alt="{{ item.alt }}">
             <figcaption>{{ item.kind|capitalize }}</figcaption>
           </figure>
-          <h2><a href="/records/{{ item.id }}">{{ item.title }}</a></h2>
+          <h2><a href="{{ url_for('record', record_id=item.id) }}">{{ item.title }}</a></h2>
           <p>{{ item.year }} &middot; {{ item.people }}</p>
         </li>
       {% endfor %}
@@ -45,7 +45,7 @@
       <aside class="waiting" aria-labelledby="waiting-heading">
         <p class="eyebrow" id="waiting-heading">Story waiting in a record</p>
         <p>{{ waiting.waiting }}</p>
-        <a class="button button-small" href="/write?from={{ waiting.id }}">Draft it</a>
+        <a class="button button-small" href="{{ url_for('write', record=waiting.id) }}">Draft it</a>
       </aside>
     {% endif %}
 

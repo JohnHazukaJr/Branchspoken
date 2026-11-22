@@ -2473,3 +2473,101 @@ nav[aria-label="Main"] li:nth-child(3) a:hover {
 .member-list .cancel-invite {
   margin-left: -0.4rem;
 }
+
+
+/* ==========================================================
+   Record page (record.html)
+   ========================================================== */
+
+.page-record-detail > header {
+  padding-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.page-record-detail main {
+  padding-bottom: 7rem;
+}
+
+.page-record-detail main > section {
+  margin-bottom: 2rem;
+}
+
+.record-scan {
+  aspect-ratio: 4 / 5;
+}
+
+.record-scan figcaption {
+  top: 1rem;
+  bottom: auto;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.page-record-detail .prompt {
+  margin-bottom: 1.5rem;
+}
+
+/* recorder: which record a new story comes from */
+.from-record {
+  margin-bottom: 1.25rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--night-line);
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--night-muted);
+}
+
+.from-record strong {
+  color: var(--cream);
+}
+
+
+/* ==========================================================
+   Write a story (write.html)
+   ========================================================== */
+
+.page-write > header {
+  padding-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-write textarea#story {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.write-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* the "about" chips are drawn for the dark recorder, lighten them here */
+.page-write .chips label {
+  border-color: var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.page-write .chips label:hover {
+  border-color: var(--ink);
+}
+
+.page-write .chips input:checked + label {
+  border-color: var(--terracotta);
+  background: var(--terracotta);
+  color: #fff;
+}
+
+.page-write .from-record {
+  border-color: var(--line);
+  background: var(--paper);
+  color: var(--muted);
+}
+
+.page-write .from-record strong {
+  color: var(--ink);
+}

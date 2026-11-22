@@ -356,8 +356,11 @@ def add_memory():
         teller = request.form.get("storyteller")
         teller_id = teller if teller in option_ids else g.viewer["id"]
         subjects = [pid for pid in request.form.getlist("about") if fam.can_see(pid)]
+        record_id = request.form.get("record")
+        record_id = record_id if fam.can_see_record(record_id) else None
         try:
-            story_id = memories.save_memory(request.form, request.files, teller_id, subjects, fam.PLACES)
+            story_id = memories.save_memory(request.form, request.files, teller_id, subjects, fam.PLACES,
+                                            record_id=record_id)
         except memories.StoryError as problem:
             error = str(problem)
         else:
@@ -371,9 +374,47 @@ def add_memory():
     if request.method == "GET":
         about = about or [chosen if chosen != "me" else g.viewer["id"]]
     people = [fam.get_person(pid) for pid in fam.PEOPLE if fam.can_see(pid)]
+    from_record = values.get("record")
+    from_record = fam.RECORDS[from_record] | {"id": from_record} if fam.can_see_record(from_record) else None
     return render_template("add-memory.html", options=options, chosen=chosen,
                            about=about, people=people, questions=fam.questions(),
+                           error=error, form=request.form, from_record=from_record)
+
+
+@app.route("/write", methods=["GET", "POST"])
+@limiter.limit("30 per hour", methods=["POST"])
+def write():
+    """Write a story instead of recording it. The writer is always the signed-in person."""
+    values = request.form if request.method == "POST" else request.args
+    record_id = values.get("record")
+    record_id = record_id if fam.can_see_record(record_id) else None
+    error = None
+
+    if request.method == "POST":
+        subjects = [pid for pid in request.form.getlist("about") if fam.can_see(pid)]
+        form = request.form.to_dict()
+        form["transcript"] = request.form.get("story", "")
+        try:
+            story_id = memories.save_memory(form, request.files, g.viewer["id"], subjects, fam.PLACES,
+                                            record_id=record_id)
+        except memories.StoryError as problem:
+            error = str(problem)
+        else:
+            return redirect(url_for("story", story_id=story_id))
+
+    about = [pid for pid in values.getlist("about") if fam.can_see(pid)]
+    people = [fam.get_person(pid) for pid in fam.PEOPLE if fam.can_see(pid)]
+    from_record = fam.RECORDS[record_id] | {"id": record_id} if record_id else None
+    return render_template("write.html", people=people, about=about, from_record=from_record,
                            error=error, form=request.form)
+
+
+@app.route("/records/<record_id>")
+def record(record_id):
+    found = fam.get_record(record_id)
+    if not found:
+        abort(404)
+    return render_template("record.html", **found)
 
 
 @app.route("/media/<path:filename>")
