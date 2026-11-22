@@ -22,6 +22,8 @@
         <button class="done" type="submit">Done</button>
       </header>
 
+      {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+
       <section class="recording-who" aria-labelledby="recording-heading">
         {% set matches = options|selectattr("person.id", "equalto", chosen)|list %}
         {% set current = matches[0] if matches else none %}
@@ -61,25 +63,26 @@
 
         <label for="audio">Or upload a recording</label>
         <input type="file" id="audio" name="audio" accept="audio/*">
+        <input type="hidden" id="duration" name="duration" value="">
       </section>
 
       <section aria-labelledby="transcript-heading">
         <h2 class="eyebrow" id="transcript-heading">Transcript</h2>
         <label for="transcript">Transcript (you can fix any mistakes)</label>
-        <textarea id="transcript" name="transcript" rows="8" placeholder="Their words will show up here as they talk."></textarea>
+        <textarea id="transcript" name="transcript" rows="8" placeholder="Their words will show up here as they talk.">{{ form.transcript }}</textarea>
       </section>
 
       <section aria-labelledby="details-heading">
         <h2 class="eyebrow" id="details-heading">Story details</h2>
 
         <label for="title">Title</label>
-        <input type="text" id="title" name="title" placeholder="Mom's kitchen song">
+        <input type="text" id="title" name="title" placeholder="Mom's kitchen song" value="{{ form.title }}" required maxlength="120">
 
         <label for="when">When did it happen?</label>
-        <input type="text" id="when" name="when" placeholder="1940s">
+        <input type="text" id="when" name="when" placeholder="1940s" value="{{ form.when }}" maxlength="60">
 
         <label for="place">Where did it happen?</label>
-        <input type="text" id="place" name="place" placeholder="Boston, Massachusetts">
+        <input type="text" id="place" name="place" placeholder="Boston, Massachusetts" value="{{ form.place }}" maxlength="80">
       </section>
 
       <fieldset class="chips">
@@ -94,7 +97,7 @@
       <section aria-labelledby="photo-heading">
         <h2 class="eyebrow" id="photo-heading">Add a photo</h2>
         <label for="photo">Photo or document</label>
-        <input type="file" id="photo" name="photo" accept="image/*">
+        <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/gif,image/webp">
       </section>
 
       <button class="button button-accent" type="submit">Save story</button>

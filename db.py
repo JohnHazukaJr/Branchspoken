@@ -121,7 +121,8 @@ def load_family_data():
         events.append(event)
 
     members = [
-        {"family": r["family_id"], "person": r["person_id"], "role": r["role"], "note": r["note"]}
+        {"family": r["family_id"], "person": r["person_id"], "role": r["role"], "note": r["note"],
+         "invited_by": r["invited_by"], "invited_at": r["invited_at"]}
         for r in _rows("SELECT * FROM members ORDER BY family_id, position")
     ]
 

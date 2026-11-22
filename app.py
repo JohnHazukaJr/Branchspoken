@@ -3,7 +3,7 @@ import re
 from datetime import timedelta
 
 from flask import (Flask, abort, g, redirect, render_template, request,
-                   session, url_for)
+                   send_from_directory, session, url_for)
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_wtf.csrf import CSRFError, CSRFProtect
@@ -12,6 +12,8 @@ from markupsafe import Markup, escape
 import accounts
 import db
 import family as fam
+import invites
+import memories
 
 app = Flask(__name__)
 app.config.update(
@@ -137,6 +139,14 @@ def current_family():
     return family_id
 
 
+@app.template_filter("media_url")
+def media_url(path):
+    """Family uploads go through /media so they stay private, the rest is static."""
+    if path.startswith("uploads/"):
+        return url_for("media", filename=path.removeprefix("uploads/"))
+    return url_for("static", filename=path)
+
+
 @app.template_filter("record_links")
 def record_links(text):
     """Turn [words](record-id) in a transcript into a highlighted link to the record."""
@@ -259,15 +269,40 @@ def relative(person_id):
 
 
 @app.route("/family", methods=["GET", "POST"])
+@limiter.limit("20 per hour", methods=["POST"])
 def family():
-    if request.method == "POST":
-        # sending invites comes later
-        return redirect(url_for("family"))
     family_id = current_family()
+    error = None
+
+    if request.method == "POST":
+        try:
+            person_id = invites.create_invite(
+                family_id, g.viewer["id"], request.form.get("name", ""),
+                request.form.get("relationship", ""), request.form.get("contact", ""))
+        except invites.InviteError as problem:
+            error = str(problem)
+        else:
+            # show the invite ready to send
+            return redirect(url_for("family", invited=person_id) + "#invite-ready")
+
+    # the invite just sent, only for the person who sent it
+    sent = invites.get_invite(family_id, request.args.get("invited", ""), g.viewer["id"])
+
     return render_template("family.html", members=fam.members(family_id),
                            invite_code=fam.FAMILIES[family_id]["invite_code"],
                            family_name=fam.FAMILIES[family_id]["name"],
-                           is_keeper=accounts.role_in(g.viewer["id"], family_id) == "keeper")
+                           is_keeper=accounts.role_in(g.viewer["id"], family_id) == "keeper",
+                           relationships=invites.RELATIONSHIPS, sent=sent,
+                           error=error, form=request.form)
+
+
+@app.route("/family/invites/<person_id>/cancel", methods=["POST"])
+def cancel_invite(person_id):
+    family_id = current_family()
+    is_keeper = accounts.role_in(g.viewer["id"], family_id) == "keeper"
+    if not invites.cancel_invite(family_id, person_id, g.viewer["id"], is_keeper):
+        abort(404)
+    return redirect(url_for("family"))
 
 
 @app.route("/family/new-invite-code", methods=["POST"])
@@ -309,21 +344,44 @@ def story(story_id):
 
 
 @app.route("/add-memory", methods=["GET", "POST"])
+@limiter.limit("30 per hour", methods=["POST"])
 def add_memory():
-    if request.method == "POST":
-        # saving stories comes next
-        return redirect(url_for("stories"))
-
     options = fam.storyteller_options()
-    ask = request.args.get("ask")
-    if ask not in [o["person"]["id"] for o in options]:
+    option_ids = [o["person"]["id"] for o in options]
+    values = request.form if request.method == "POST" else request.args
+    error = None
+
+    if request.method == "POST":
+        # only people from the viewer's own trees, whatever the form says
+        teller = request.form.get("storyteller")
+        teller_id = teller if teller in option_ids else g.viewer["id"]
+        subjects = [pid for pid in request.form.getlist("about") if fam.can_see(pid)]
+        try:
+            story_id = memories.save_memory(request.form, request.files, teller_id, subjects, fam.PLACES)
+        except memories.StoryError as problem:
+            error = str(problem)
+        else:
+            return redirect(url_for("story", story_id=story_id))
+
+    ask = values.get("ask") or values.get("storyteller")
+    if ask not in option_ids and ask != "me":
         ask = None
-    chosen = ask or (options[0]["person"]["id"] if options else "me")
-    about = [pid for pid in request.args.getlist("about") if fam.can_see(pid)]
-    about = about or [chosen if chosen != "me" else g.viewer["id"]]
+    chosen = ask or (option_ids[0] if options else "me")
+    about = [pid for pid in values.getlist("about") if fam.can_see(pid)]
+    if request.method == "GET":
+        about = about or [chosen if chosen != "me" else g.viewer["id"]]
     people = [fam.get_person(pid) for pid in fam.PEOPLE if fam.can_see(pid)]
     return render_template("add-memory.html", options=options, chosen=chosen,
-                           about=about, people=people, questions=fam.questions())
+                           about=about, people=people, questions=fam.questions(),
+                           error=error, form=request.form)
+
+
+@app.route("/media/<path:filename>")
+def media(filename):
+    """A recording or photo, only for people who can see the story it belongs to."""
+    if not fam.can_see_media(f"uploads/{filename}"):
+        abort(404)
+    return send_from_directory(memories.UPLOAD_DIR, filename)
 
 
 # ---------- Exploring ----------

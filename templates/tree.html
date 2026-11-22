@@ -91,7 +91,7 @@
           <p>About
             {%- for p in s.subjects %} <a href="{{ url_for('relative', person_id=p.id) }}">{{ p.first }}</a>{% if not loop.last %},{% endif %}{% endfor %}
           </p>
-          <p><time datetime="{{ s.year }}">{{ s.era }}</time></p>
+          {% if s.era %}<p><time{% if s.year %} datetime="{{ s.year }}"{% endif %}>{{ s.era }}</time></p>{% endif %}
         </article>
       {% endfor %}
 

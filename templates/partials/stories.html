@@ -16,7 +16,7 @@
       <h3><a href="{{ url_for('story', story_id=s.id) }}">{{ s.title }}</a></h3>
       <p>
         {{- byline(s) -}}
-        {% if show_era %} &middot; {{ s.era }}{% endif %}
+        {% if show_era and s.era %} &middot; {{ s.era }}{% endif %}
         {%- if s.minutes %} &middot; {{ s.minutes }} min{% elif s.detail %} &middot; {{ s.detail }}{% endif -%}
       </p>
     </article>

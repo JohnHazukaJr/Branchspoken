@@ -23,7 +23,7 @@
 
       <header class="story-head">
         <p class="eyebrow eyebrow-accent">
-          {{ byline(story) }} &middot; <time datetime="{{ story.year }}">{{ story.era }}</time>
+          {{ byline(story) }}{% if story.era %} &middot; <time{% if story.year %} datetime="{{ story.year }}"{% endif %}>{{ story.era }}</time>{% endif %}
         </p>
         <h1 id="story-title">{{ story.title }}</h1>
         <p class="about">About
@@ -33,7 +33,7 @@
 
       {% if story.photo %}
         <figure>
-          <img src="{{ url_for('static', filename=story.photo) }}" alt="{{ story.photo_alt }}">
+          <img src="{{ story.photo|media_url }}" alt="{{ story.photo_alt }}">
           <figcaption>{{ story.photo_caption }}</figcaption>
         </figure>
       {% endif %}
@@ -41,10 +41,10 @@
       {% if story.audio %}
         <section class="player" aria-labelledby="listen-heading">
           <h2 id="listen-heading">Listen</h2>
-          <audio controls src="{{ url_for('static', filename=story.audio) }}">
+          <audio controls src="{{ story.audio|media_url }}">
             Your browser can't play this recording. You can still read it below.
           </audio>
-          <p>{{ story.teller.first }}'s voice &middot; {{ story.audio_length }}</p>
+          <p>{{ story.teller.first }}'s voice{% if story.audio_length %} &middot; {{ story.audio_length }}{% endif %}</p>
         </section>
       {% endif %}
 

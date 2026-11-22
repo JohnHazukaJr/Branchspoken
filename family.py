@@ -1,5 +1,7 @@
 """Works out relationships, story counts and page data from the family data."""
 
+from datetime import datetime, timezone
+
 from db import load_family_data
 
 # Who is signed in, set by refresh() from the login session
@@ -42,6 +44,12 @@ def can_see(person_id):
 def can_see_story(story_id):
     story = STORIES.get(story_id)
     return bool(story) and bool(VISIBLE & set(story["subjects"]))
+
+
+def can_see_media(path):
+    """True if an uploaded file belongs to a story the viewer can see."""
+    return any(path in (s.get("audio"), s.get("photo")) and can_see_story(sid)
+               for sid, s in STORIES.items())
 
 
 # ---------- People ----------
@@ -399,13 +407,31 @@ def map_summary():
 
 # ---------- Members and invites ----------
 
+def _ago(when):
+    """'just now', 'yesterday', '3 days ago', 'last week'..."""
+    days = (datetime.now(timezone.utc) - when).days
+    if days < 1:
+        return "today"
+    if days == 1:
+        return "yesterday"
+    if days < 7:
+        return f"{days} days ago"
+    if days < 14:
+        return "last week"
+    return f"{days // 7} weeks ago"
+
+
 def members(family_id):
     result = []
     for member in [m for m in MEMBERS if m["family"] == family_id]:
         person = get_person(member["person"])
         word, _ = relation(VIEWER_ID, person["id"])
         told = stories_told_by(person["id"])
-        if member.get("note"):
+        if member["role"] == "pending" and member.get("invited_at"):
+            inviter = member.get("invited_by")
+            by = "you" if inviter == VIEWER_ID else (PEOPLE[inviter]["first"] if inviter in PEOPLE else None)
+            detail = f"invited {_ago(member['invited_at'])}" + (f" by {by}" if by else "")
+        elif member.get("note"):
             detail = member["note"]
         else:
             detail = f"{len(told)} {'story' if len(told) == 1 else 'stories'}"
@@ -414,6 +440,7 @@ def members(family_id):
             "role": member["role"],
             "relation": "You" if word == "you" else word.capitalize(),
             "detail": detail,
+            "invited_by": member.get("invited_by"),
         })
     return result
 

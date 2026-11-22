@@ -347,14 +347,14 @@ MEMBERS = [
     {"family": "miller", "person": "carol", "role": "storyteller"},
     {"family": "miller", "person": "emily", "role": "editor", "note": "tends the Miller branch"},
     {"family": "miller", "person": "daniel", "role": "storyteller"},
-    {"family": "miller", "person": "claire", "role": "pending", "note": "invited 2 days ago"},
-    {"family": "miller", "person": "patrick", "role": "pending", "note": "invited last week"},
+    {"family": "miller", "person": "claire", "role": "pending", "invited_by": "daniel", "invited_days_ago": 2},
+    {"family": "miller", "person": "patrick", "role": "pending", "invited_by": "anne", "invited_days_ago": 7},
 
     {"family": "sullivan", "person": "anne", "role": "keeper", "note": "started the tree"},
     {"family": "sullivan", "person": "henry", "role": "storyteller"},
     {"family": "sullivan", "person": "margaret", "role": "storyteller"},
     {"family": "sullivan", "person": "daniel", "role": "storyteller"},
-    {"family": "sullivan", "person": "sean", "role": "pending", "note": "invited yesterday"},
+    {"family": "sullivan", "person": "sean", "role": "pending", "invited_by": "anne", "invited_days_ago": 1},
 ]
 
 

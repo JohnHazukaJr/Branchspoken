@@ -52,9 +52,11 @@ def seed(conn):
 
         for position, m in enumerate(MEMBERS):
             cur.execute(
-                """INSERT INTO members (family_id, person_id, role, note, position)
-                   VALUES (%s, %s, %s, %s, %s)""",
-                (m["family"], m["person"], m["role"], m.get("note"), position))
+                """INSERT INTO members (family_id, person_id, role, note, position, invited_by, invited_at)
+                   VALUES (%s, %s, %s, %s, %s, %s,
+                           CASE WHEN %s::int IS NULL THEN NULL ELSE now() - make_interval(days => %s::int) END)""",
+                (m["family"], m["person"], m["role"], m.get("note"), position, m.get("invited_by"),
+                 m.get("invited_days_ago"), m.get("invited_days_ago")))
 
         for u in USERS:
             cur.execute(

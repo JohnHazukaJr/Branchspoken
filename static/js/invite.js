@@ -1,23 +1,26 @@
-// Invite link (family.html)
-// Copies the invite link so it can be pasted into a text or email.
+// Invites (family.html)
+// "Copy link" and "Copy message" copy the field named in their data-copy.
 
-const copyButton = document.querySelector('.invite-link button');
-const linkField = document.querySelector('#invite-url');
+document.querySelectorAll('[data-copy]').forEach((button) => {
+  const field = document.getElementById(button.dataset.copy);
+  const label = button.textContent;
 
-copyButton.addEventListener('click', async () => {
-  const link = 'https://' + linkField.value;
+  button.addEventListener('click', async () => {
+    let text = field.value;
+    if (field.id === 'invite-url') text = 'https://' + text;
 
-  try {
-    await navigator.clipboard.writeText(link);
-  } catch (error) {
-    // older browsers: select the text so it can be copied by hand
-    linkField.select();
-    copyButton.textContent = 'Press Ctrl+C to copy';
-    return;
-  }
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      // older browsers: select the text so it can be copied by hand
+      field.select();
+      button.textContent = 'Press Ctrl+C to copy';
+      return;
+    }
 
-  copyButton.textContent = 'Copied!';
-  setTimeout(() => {
-    copyButton.textContent = 'Copy link';
-  }, 2000);
+    button.textContent = 'Copied!';
+    setTimeout(() => {
+      button.textContent = label;
+    }, 2000);
+  });
 });

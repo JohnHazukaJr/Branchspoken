@@ -14,3 +14,6 @@ instance/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Recordings and photos families upload
+uploads/

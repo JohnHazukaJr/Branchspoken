@@ -16,32 +16,45 @@
       <h1>{{ members|length }} people tending this tree</h1>
     </header>
 
+    {% if sent %}
+      <section class="invite-ready" id="invite-ready" aria-labelledby="ready-heading">
+        <p class="eyebrow">Invite ready</p>
+        <h2 id="ready-heading">Now send it to {{ sent.first_name }}.</h2>
+        <p>{{ sent.first_name }} is in the tree as pending. When they join with this link and the name
+          <strong>{{ sent.first_name }} {{ sent.last_name }}</strong>, their account takes their place.</p>
+        <label for="invite-message">Your message</label>
+        <textarea id="invite-message" rows="5" readonly>{{ sent.message }}</textarea>
+        <div class="ready-actions">
+          <a class="button" href="{{ sent.send_link }}">{{ sent.send_label }}</a>
+          <button class="button button-outline" type="button" data-copy="invite-message">Copy message</button>
+        </div>
+      </section>
+    {% endif %}
+
     <section class="invite" aria-labelledby="invite-heading">
       <h2 id="invite-heading">Invite someone who remembers.</h2>
       <p>They can add stories by voice. No account setup for grandparents.</p>
 
       <form action="{{ url_for('family') }}" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
         <div>
           <label for="invite-name">Their name</label>
-          <input type="text" id="invite-name" name="name" placeholder="Margaret Sullivan" required>
+          <input type="text" id="invite-name" name="name" placeholder="Margaret Sullivan" value="{{ form.name }}" autocomplete="off" required>
         </div>
 
         <div>
           <label for="invite-relationship">How are they related to you?</label>
           <select id="invite-relationship" name="relationship">
-            <option value="grandparent">Grandparent</option>
-            <option value="parent">Parent</option>
-            <option value="aunt-uncle">Aunt or uncle</option>
-            <option value="sibling">Brother or sister</option>
-            <option value="cousin">Cousin</option>
-            <option value="other">Someone else</option>
+            {% for value, label in relationships.items() %}
+              <option value="{{ value }}"{% if form.relationship == value %} selected{% endif %}>{{ label }}</option>
+            {% endfor %}
           </select>
         </div>
 
         <div>
           <label for="invite-contact">Email or phone number</label>
-          <input type="text" id="invite-contact" name="contact" placeholder="name@example.com" required>
+          <input type="text" id="invite-contact" name="contact" placeholder="name@example.com" value="{{ form.contact }}" autocomplete="off" required>
         </div>
 
         <button type="submit">Send invite</button>
@@ -50,7 +63,7 @@
       <div class="invite-link">
         <label for="invite-url">Or share this link</label>
         <input type="text" id="invite-url" value="branchspoken.com/join?code={{ invite_code }}" readonly>
-        <button class="button button-outline" type="button">Copy link</button>
+        <button class="button button-outline" type="button" data-copy="invite-url">Copy link</button>
       </div>
 
       {% if is_keeper %}
@@ -73,6 +86,12 @@
               <p>{{ m.relation }} &middot; {{ m.detail }}</p>
             </div>
             <span class="role{% if m.role != 'pending' %} role-{{ m.role }}{% endif %}">{{ m.role|capitalize }}</span>
+            {% if m.role == "pending" and (is_keeper or m.invited_by == g.viewer.id) %}
+              <form class="cancel-invite" action="{{ url_for('cancel_invite', person_id=m.person.id) }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" aria-label="Cancel the invite for {{ m.person.first }}">Cancel</button>
+              </form>
+            {% endif %}
           </li>
         {% endfor %}
       </ul>

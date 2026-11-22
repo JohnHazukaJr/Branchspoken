@@ -2422,3 +2422,54 @@ nav[aria-label="Main"] li:nth-child(3) a:hover {
 .page-error main {
   padding-bottom: 7rem;
 }
+
+
+/* ---------- Invites ---------- */
+
+.invite-ready {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem 1.25rem;
+  border: 2px solid var(--green);
+  border-radius: 1.5rem;
+  background: var(--mint);
+}
+
+.invite-ready .eyebrow {
+  color: #3f5f3d;
+}
+
+.invite-ready textarea {
+  margin-bottom: 0.85rem;
+  font-size: 0.9rem;
+}
+
+.ready-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.ready-actions .button {
+  flex: 1;
+}
+
+.cancel-invite button {
+  width: auto;
+  margin: 0;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  font: 500 0.75rem var(--sans);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.cancel-invite button:hover {
+  border-color: #c0432b;
+  color: #c0432b;
+}
+
+.member-list .cancel-invite {
+  margin-left: -0.4rem;
+}

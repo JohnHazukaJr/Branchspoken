@@ -8,6 +8,7 @@ const timer = document.querySelector('.timer');
 const recordButton = document.querySelector('.record-button');
 const statusMessage = document.querySelector('.record-status');
 const audioInput = document.querySelector('#audio');
+const durationInput = document.querySelector('#duration');
 const transcript = document.querySelector('#transcript');
 const storyteller = document.querySelector('#storyteller');
 const recordingHeading = document.querySelector('#recording-heading');
@@ -211,6 +212,8 @@ async function startRecording() {
 }
 
 function stopRecording() {
+  // tell the server how long the recording is, in seconds
+  durationInput.value = Math.round((Date.now() - startedAt) / 1000);
   setRecording(false);
   stopTimer();
   stopTranscribing();

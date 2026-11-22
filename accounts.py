@@ -65,7 +65,7 @@ def _slug(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
-def _unique_id(cur, table, base):
+def unique_id(cur, table, base):
     """'ruth', or 'ruth-2' if that's taken, for page addresses."""
     base = _slug(base) or table.rstrip("s")
     candidate, number = base, 2
@@ -126,7 +126,7 @@ def _check_new_account(email, password):
 
 
 def _create_person(cur, first, last, born=None):
-    person_id = _unique_id(cur, "people", first)
+    person_id = unique_id(cur, "people", first)
     cur.execute(
         # sex is left empty, so relationship words stay neutral ("parent", "sibling")
         """INSERT INTO people (id, first_name, last_name, side, born)
@@ -157,7 +157,7 @@ def sign_up(first, last, born, email, password, tree_name):
     with conn.cursor() as cur:
         person_id = _create_person(cur, first, last, born)
 
-        family_id = _unique_id(cur, "families", tree_name)
+        family_id = unique_id(cur, "families", tree_name)
         cur.execute(
             "INSERT INTO families (id, name, invite_code) VALUES (%s, %s, %s)",
             (family_id, tree_name.strip(), _invite_code(cur, tree_name)))

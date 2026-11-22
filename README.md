@@ -22,6 +22,9 @@ branchspoken/
 ├── app.py                # Flask app and page routes
 ├── db.py                 # PostgreSQL connection, loads the family for each request
 ├── accounts.py           # Sign up, sign in and joining a tree
+├── memories.py           # Saves new stories and checks uploaded recordings and photos
+├── invites.py            # Inviting relatives and cancelling invites
+├── uploads/              # Recordings and photos families add (not in git)
 ├── data.py               # Sample family that seed.py loads into the database
 ├── family.py             # Relationships, story counts and page data
 ├── schema.sql            # PostgreSQL tables
@@ -133,7 +136,8 @@ To try joining, sign up through **I was invited by family** with the code `MILLE
 - Invite codes are long and random (`MILLER-K7QF-29XD`). A tree's Keeper can replace the code from the Family page if it gets shared.
 - Responses send a Content Security Policy and other security headers, so pages only run this site's own scripts and can't be embedded elsewhere.
 - Database queries use parameters, and templates escape everything people type.
-- Uploads are capped at 25 MB.
+- Uploads are capped at 25 MB and must really be audio or images: the file's contents are checked, not just its name.
+- Uploaded files get random names, live outside `static/`, and are only served to people who can see the story they belong to.
 
 Before putting the site online:
 

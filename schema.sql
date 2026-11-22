@@ -64,6 +64,11 @@ CREATE TABLE members (
     role      TEXT NOT NULL CHECK (role IN ('keeper', 'editor', 'storyteller', 'pending')),
     note      TEXT,
     position  INTEGER NOT NULL DEFAULT 0,
+    -- filled in for invites that haven't been accepted yet
+    invited_by           TEXT REFERENCES people (id) ON DELETE SET NULL,
+    invited_at           TIMESTAMPTZ,
+    invited_contact      TEXT,              -- email or phone, only shown to whoever sent the invite
+    invited_relationship TEXT,
     PRIMARY KEY (family_id, person_id)
 );
 
