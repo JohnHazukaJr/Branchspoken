@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Map | Branch Spoken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-map">
+
+  <main>
+
+    <figure class="map-view" aria-label="Map of where the family comes from">
+
+      <svg class="journeys" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path class="journey-sullivan" d="M84 28 Q66 12 46 45" />
+        <path class="journey-sullivan" d="M46 45 Q33 30 20 42" />
+        <path class="journey-miller" d="M28 64 Q16 55 20 42" />
+      </svg>
+
+      <ul class="pins">
+        <li class="pin pin-sullivan" style="--x: 84%; --y: 28%;">
+          <a href="#county-clare">County Clare</a>
+        </li>
+        <li class="pin pin-sullivan" style="--x: 46%; --y: 45%;">
+          <a href="#boston">Boston</a>
+        </li>
+        <li class="pin pin-miller" style="--x: 28%; --y: 64%;">
+          <a href="#springfield">Springfield</a>
+        </li>
+        <li class="pin pin-home" style="--x: 20%; --y: 42%;">
+          <a href="#minneapolis">Minneapolis</a>
+        </li>
+      </ul>
+
+    </figure>
+
+    <section class="sheet" aria-labelledby="places-heading">
+      <h1 id="places-heading">Where you come from</h1>
+      <p class="meta">4 homelands &middot; 3 journeys &middot; about 4,600 miles</p>
+
+      <ul class="place-list">
+        <li class="place-sullivan" id="county-clare">
+          <div>
+            <h2>County Clare, Ireland</h2>
+            <p>Sullivan &amp; Keane &middot; 1880s&ndash;1909</p>
+          </div>
+          <a href="stories.html?place=county-clare">2 stories</a>
+        </li>
+
+        <li class="place-sullivan" id="boston">
+          <div>
+            <h2>Boston, Massachusetts</h2>
+            <p>Sullivan &middot; 1909&ndash;1967</p>
+          </div>
+          <a href="stories.html?place=boston">9 stories</a>
+        </li>
+
+        <li class="place-miller" id="springfield">
+          <div>
+            <h2>Springfield, Illinois</h2>
+            <p>Ruth's family &middot; 1931&ndash;1952</p>
+          </div>
+          <a href="stories.html?place=springfield">3 stories</a>
+        </li>
+
+        <li class="place-home" id="minneapolis">
+          <div>
+            <h2>Minneapolis, Minnesota</h2>
+            <p>Where the branches met</p>
+          </div>
+          <a href="stories.html?place=minneapolis">14 stories</a>
+        </li>
+      </ul>
+
+      <h2 class="eyebrow" id="journeys-heading">Journeys</h2>
+      <ol class="journey-list" aria-labelledby="journeys-heading">
+        <li><time datetime="1909">1909</time> Henry's grandmother sails from County Clare to Boston</li>
+        <li><time datetime="1952">1952</time> <a href="story.html?id=ruths-first-winter">Ruth takes the train north to Minneapolis</a></li>
+        <li><time datetime="1967">1967</time> <a href="story.html?id=leaving-boston">The Sullivans drive west from Boston</a></li>
+      </ol>
+    </section>
+
+  </main>
+
+  <nav aria-label="Main">
+    <ul>
+      <li><a href="tree.html">Tree</a></li>
+      <li><a href="stories.html">Stories</a></li>
+      <li><a href="add-memory.html">Add a memory</a></li>
+      <li><a href="map.html" aria-current="page">Map</a></li>
+      <li><a href="family.html">Family</a></li>
+    </ul>
+  </nav>
+
+</body>
+</html>
