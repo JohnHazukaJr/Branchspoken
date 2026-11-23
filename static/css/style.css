@@ -2571,3 +2571,422 @@ nav[aria-label="Main"] li:nth-child(3) a:hover {
 .page-write .from-record strong {
   color: var(--ink);
 }
+
+
+/* ==========================================================
+   Screen sizes
+   Everything above is for phones. These make it fit
+   very small phones, tablets and computers.
+   ========================================================== */
+
+/* ---------- Small phones ---------- */
+
+@media (max-width: 380px) {
+  :root {
+    --gutter: 1rem;
+  }
+
+  h1 { font-size: 1.9rem; }
+  .page-welcome h1 { font-size: 2.1rem; }
+  .app-header h1 { font-size: 1.45rem; }
+
+  .node::before {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .node { font-size: 0.8rem; }
+
+  /* the timeline becomes one column: line on the left, every event to its right */
+  .timeline-heads {
+    display: flex;
+    gap: 1rem;
+    padding-left: 3.25rem;
+  }
+
+  .timeline-heads .side-sullivan { text-align: left; }
+
+  .timeline::before {
+    left: 1.6rem;
+  }
+
+  .timeline li,
+  .timeline .side-both {
+    grid-template-columns: 3.25rem 1fr;
+    justify-items: stretch;
+  }
+
+  .timeline time,
+  .side-both time {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 0.2rem 0;
+  }
+
+  .side-sullivan .event,
+  .side-miller .event,
+  .side-both .event {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+    text-align: left;
+  }
+
+  .side-sullivan .event {
+    border-right: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+  }
+}
+
+
+/* ---------- Tablets ---------- */
+
+@media (min-width: 700px) {
+  :root {
+    --column: 42rem;
+    --gutter: 2rem;
+  }
+
+  /* forms and reading stay a comfortable width */
+  .page-auth,
+  .page-welcome,
+  .page-record,
+  .page-write {
+    --column: 32rem;
+  }
+
+  .page-story {
+    --column: 40rem;
+  }
+
+  .archive-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .latest {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 0.75rem;
+  }
+
+  .latest h2,
+  .latest .see-all {
+    grid-column: 1 / -1;
+  }
+
+  .map-view {
+    margin: 1.5rem 0 0;
+    border-radius: 1.5rem;
+    aspect-ratio: 16 / 10;
+  }
+
+  .sheet {
+    margin: -2rem 0 0;
+    border-radius: 1.5rem;
+  }
+
+  .portrait {
+    margin: 1rem 0 1.5rem;
+    border-radius: 2rem;
+    aspect-ratio: 16 / 10;
+  }
+
+  .page-relative > header {
+    top: 2rem;
+    padding: 0 calc(var(--gutter) + 1rem);
+  }
+}
+
+
+/* ---------- Computers ---------- */
+
+@media (min-width: 1024px) {
+  :root {
+    --column: 68rem;
+    --sidebar: 15rem;
+  }
+
+  /* the bottom tab bar becomes a sidebar */
+  body:has(> nav[aria-label="Main"]) {
+    padding-left: var(--sidebar);
+  }
+
+  nav[aria-label="Main"] {
+    top: 0;
+    right: auto;
+    width: var(--sidebar);
+    padding: 1.75rem 1rem;
+    border-top: 0;
+    border-right: 1px solid var(--line);
+    background: var(--paper);
+  }
+
+  nav[aria-label="Main"]::before {
+    content: "Branch Spoken";
+    display: block;
+    margin: 0 0.75rem 1.75rem;
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    color: var(--ink);
+  }
+
+  nav[aria-label="Main"] ul {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    padding: 0;
+  }
+
+  nav[aria-label="Main"] li {
+    flex: none;
+    text-align: left;
+  }
+
+  nav[aria-label="Main"] a {
+    display: block;
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  nav[aria-label="Main"] a:hover,
+  nav[aria-label="Main"] a[aria-current="page"] {
+    background: var(--cream);
+  }
+
+  nav[aria-label="Main"] a[aria-current="page"]::after {
+    display: none;
+  }
+
+  /* "Add a memory" goes first, as a proper button */
+  nav[aria-label="Main"] li:nth-child(3) {
+    order: -1;
+    margin-bottom: 1rem;
+  }
+
+  nav[aria-label="Main"] li:nth-child(3) a {
+    display: flex;
+    gap: 0.5rem;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border: 0;
+    border-radius: 999px;
+    box-shadow: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  nav[aria-label="Main"] li:nth-child(3) a::before {
+    font-size: 1.3rem;
+  }
+
+  .page-tree main,
+  .page-relative main,
+  .page-story main,
+  .page-map main,
+  .page-family main,
+  .page-stories main,
+  .page-timeline main,
+  .page-record-detail main,
+  .page-error main {
+    padding-bottom: 4rem;
+  }
+
+  /* floating cards center on the content, not the whole window */
+  .jump,
+  .waiting {
+    left: calc(50% + var(--sidebar) / 2);
+    bottom: 1.5rem;
+  }
+
+  .page-archive main {
+    padding-bottom: 10rem;
+  }
+
+  .waiting {
+    width: min(40rem, calc(100% - var(--sidebar) - 4rem));
+  }
+
+  .page-timeline {
+    --column: 50rem;
+  }
+
+  .page-story {
+    --column: 44rem;
+  }
+
+  .page-stories {
+    --column: 56rem;
+  }
+
+  /* welcome: photo beside the words */
+  .page-welcome {
+    --column: 68rem;
+  }
+
+  .page-welcome main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 4rem;
+    align-items: center;
+    align-content: center;
+  }
+
+  .page-welcome .hero {
+    grid-row: 1 / span 2;
+    margin: 0;
+  }
+
+  .page-welcome .fine-print {
+    grid-column: 2;
+    margin-top: 0;
+    text-align: left;
+  }
+
+  .page-welcome h1 {
+    font-size: 3rem;
+  }
+
+  .page-auth main {
+    padding-top: 2rem;
+  }
+
+  /* tree: the two family lines side by side, where they meet below */
+  [aria-labelledby="tree-heading"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 2rem;
+  }
+
+  [aria-labelledby="tree-heading"] .branch {
+    flex: 1 1 22rem;
+    margin: 1rem 0;
+  }
+
+  [aria-labelledby="tree-heading"] .branch-meet,
+  .tree-hint,
+  [aria-labelledby="tree-heading"] .see-all {
+    flex-basis: 100%;
+  }
+
+  .node::before {
+    width: 3.75rem;
+    height: 3.75rem;
+  }
+
+  .you::before {
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+
+  .latest {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* relative profile and record page: photo beside the details */
+  .page-relative > header {
+    position: static;
+    padding: 1.5rem var(--gutter) 0;
+  }
+
+  .page-relative main,
+  .page-record-detail main {
+    display: grid;
+    grid-template-columns: minmax(16rem, 24rem) minmax(0, 1fr);
+    column-gap: 3.5rem;
+    align-items: start;
+    padding-top: 1.5rem;
+  }
+
+  .portrait,
+  .record-scan {
+    grid-column: 1;
+    grid-row: 1 / span 10;
+    position: sticky;
+    top: 2rem;
+    margin: 0;
+    border-radius: 2rem;
+    aspect-ratio: 4 / 5;
+  }
+
+  .page-relative main > :not(figure),
+  .page-record-detail main > :not(figure) {
+    grid-column: 2;
+  }
+
+  /* stories: two columns of rows */
+  .page-stories .story-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2.5rem;
+  }
+
+  /* archive: four across */
+  .archive-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.75rem 1.25rem;
+  }
+
+  /* map: map on the left, places on the right */
+  .page-map main {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    column-gap: 2rem;
+    align-items: start;
+    padding-top: 2rem;
+  }
+
+  .map-view {
+    position: sticky;
+    top: 2rem;
+    margin: 0;
+    aspect-ratio: 1 / 1;
+  }
+
+  .sheet {
+    margin: 0;
+    padding-top: 1.25rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    box-shadow: none;
+  }
+
+  .sheet::before {
+    display: none;
+  }
+
+  /* family: invite on the left, members on the right */
+  .page-family main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-auto-flow: row dense;
+    column-gap: 2.5rem;
+    align-items: start;
+    padding-top: 2.5rem;
+  }
+
+  .page-family .page-head {
+    grid-column: 1 / -1;
+  }
+
+  .page-family .invite,
+  .page-family .invite-ready {
+    grid-column: 1;
+  }
+
+  .page-family main > section:not(.invite):not(.invite-ready),
+  .page-family .sign-out {
+    grid-column: 2;
+  }
+
+  .page-family main > section[aria-labelledby="members-heading"] {
+    grid-row: span 3;
+  }
+
+  .sign-out {
+    margin-top: 0;
+  }
+}
