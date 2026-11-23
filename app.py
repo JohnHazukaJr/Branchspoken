@@ -15,13 +15,20 @@ import family as fam
 import invites
 import memories
 
+REQUIRED_SETTINGS = ["SECRET_KEY", "DATABASE_URL"]
+missing = [name for name in REQUIRED_SETTINGS if not os.environ.get(name)]
+if missing:
+    raise RuntimeError(
+        f"Missing setting(s): {', '.join(missing)}. Locally, copy .env.example to .env. "
+        "On a host like Render, add them as environment variables.")
+
 app = Flask(__name__)
 app.config.update(
     SECRET_KEY=os.environ["SECRET_KEY"],
     SESSION_COOKIE_HTTPONLY=True,                    # scripts can't read the login cookie
     SESSION_COOKIE_SAMESITE="Lax",
     # only send the login cookie over HTTPS once the site is online
-    SESSION_COOKIE_SECURE=os.environ.get("SESSION_COOKIE_SECURE") == "1",
+    SESSION_COOKIE_SECURE=os.environ.get("SESSION_COOKIE_SECURE", "").strip().lower() in ("1", "true", "yes"),
     PERMANENT_SESSION_LIFETIME=timedelta(days=30),   # "Keep me signed in"
     MAX_CONTENT_LENGTH=25 * 1024 * 1024,             # biggest upload: 25 MB
 )
