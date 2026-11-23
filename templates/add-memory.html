@@ -29,6 +29,8 @@
         <input type="hidden" name="record" value="{{ from_record.id }}">
       {% endif %}
 
+      <div class="record-main">
+
       <section class="recording-who" aria-labelledby="recording-heading">
         {% set matches = options|selectattr("person.id", "equalto", chosen)|list %}
         {% set current = matches[0] if matches else none %}
@@ -71,6 +73,10 @@
         <input type="hidden" id="duration" name="duration" value="">
       </section>
 
+      </div>
+
+      <div class="record-details">
+
       <section aria-labelledby="transcript-heading">
         <h2 class="eyebrow" id="transcript-heading">Transcript</h2>
         <label for="transcript">Transcript (you can fix any mistakes)</label>
@@ -106,6 +112,8 @@
       </section>
 
       <button class="button button-accent" type="submit">Save story</button>
+
+      </div>
 
     </form>
 

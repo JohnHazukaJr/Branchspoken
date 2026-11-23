@@ -31,6 +31,10 @@
         </p>
       </header>
 
+      {% if story.photo or story.audio %}
+      <div class="story-media">
+      {% endif %}
+
       {% if story.photo %}
         <figure>
           <img src="{{ story.photo|media_url }}" alt="{{ story.photo_alt }}">
@@ -46,6 +50,10 @@
           </audio>
           <p>{{ story.teller.first }}'s voice{% if story.audio_length %} &middot; {{ story.audio_length }}{% endif %}</p>
         </section>
+      {% endif %}
+
+      {% if story.photo or story.audio %}
+      </div>
       {% endif %}
 
       <section class="transcript" aria-labelledby="transcript-heading">

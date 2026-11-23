@@ -350,7 +350,9 @@ legend {
 }
 
 form > div,
-fieldset > div {
+fieldset > div,
+.write-main > div,
+.write-side > div {
   margin-bottom: 1.1rem;
 }
 
@@ -2988,5 +2990,205 @@ nav[aria-label="Main"] li:nth-child(3) a:hover {
 
   .sign-out {
     margin-top: 0;
+  }
+}
+
+
+/* ---------- Computers: page layouts ---------- */
+
+@media (min-width: 1024px) {
+  .page-stories { --column: 72rem; }
+  .page-timeline { --column: 60rem; }
+
+  /* sign in, sign up, join: a picture panel beside the form */
+  .page-auth {
+    --column: 30rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+  }
+
+  .page-auth::before {
+    content: "Every family is a story\A still being told.";
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: flex-end;
+    height: 100vh;
+    padding: 3.5rem;
+    white-space: pre-line;
+    font-family: var(--serif);
+    font-size: 2.6rem;
+    line-height: 1.15;
+    color: var(--cream);
+    background:
+      repeating-linear-gradient(135deg, rgb(255 255 255 / 0.06) 0 2px, transparent 2px 14px),
+      radial-gradient(circle at 25% 20%, rgb(255 255 255 / 0.18), transparent 45%),
+      linear-gradient(160deg, var(--terracotta) 0%, #8a5a3c 45%, #3f5f3d 100%);
+  }
+
+  .page-auth > header,
+  .page-auth main {
+    grid-column: 2;
+  }
+
+  .page-auth > header {
+    padding-top: 2rem;
+    margin-bottom: 0;
+  }
+
+  .page-auth main {
+    align-self: center;
+    padding: 2rem var(--gutter) 3rem;
+  }
+
+  .page-auth main > section:first-child {
+    padding: 2.25rem 2rem 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: 1.5rem;
+    background: var(--paper);
+  }
+
+  .page-auth main > .card {
+    background: var(--cream);
+  }
+
+  /* recorder: the question and record button beside the transcript */
+  .page-record {
+    --column: 76rem;
+  }
+
+  .page-record form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 4.5rem;
+    align-items: start;
+  }
+
+  .page-record form > :not(.record-main):not(.record-details) {
+    grid-column: 1 / -1;
+  }
+
+  .record-main {
+    grid-column: 1;
+    position: sticky;
+    top: 1.5rem;
+  }
+
+  .record-details {
+    grid-column: 2;
+    padding-top: 0.5rem;
+  }
+
+  .question h2 {
+    font-size: 2.75rem;
+  }
+
+  .record-button {
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+
+  .record-button::before {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .record-button[aria-pressed="true"]::before {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .page-record textarea {
+    min-height: 16rem;
+  }
+
+  /* write: a big writing space with the details beside it */
+  .page-write {
+    --column: 64rem;
+  }
+
+  .page-write form {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    column-gap: 2.5rem;
+    align-items: start;
+  }
+
+  .page-write form > :not(.write-main):not(.write-side) {
+    grid-column: 1 / -1;
+  }
+
+  .write-main {
+    grid-column: 1;
+  }
+
+  .write-side {
+    grid-column: 2;
+    position: sticky;
+    top: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: 1.25rem;
+    background: var(--paper);
+  }
+
+  .write-side .write-pair {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+
+  .page-write textarea#story {
+    min-height: 28rem;
+  }
+
+  /* a story: text on the left, photo and player beside it */
+  .page-story {
+    --column: 72rem;
+  }
+
+  .page-story article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+    column-gap: 3.5rem;
+    align-items: start;
+  }
+
+  .page-story article > * {
+    grid-column: 1;
+  }
+
+  .page-story .story-head {
+    grid-column: 1 / -1;
+  }
+
+  .page-story .story-media {
+    grid-column: 2;
+    grid-row: 2 / span 3;
+    position: sticky;
+    top: 1.5rem;
+  }
+
+  .story-media figure {
+    aspect-ratio: 4 / 3;
+  }
+
+  .story-head h1 {
+    font-size: 2.8rem;
+  }
+
+  .page-story .card,
+  .page-story .pager-nav {
+    max-width: calc(100% - 25.5rem);
+  }
+}
+
+/* big screens: a little more room to breathe */
+@media (min-width: 1400px) {
+  html {
+    font-size: 106.25%;
   }
 }
