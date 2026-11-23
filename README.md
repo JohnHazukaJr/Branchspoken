@@ -24,6 +24,7 @@ branchspoken/
 ├── accounts.py           # Sign up, sign in and joining a tree
 ├── memories.py           # Saves new stories and checks uploaded recordings and photos
 ├── invites.py            # Inviting relatives and cancelling invites
+├── relatives.py          # Adding relatives to the tree and editing people's details
 ├── uploads/              # Recordings and photos families add (not in git)
 ├── data.py               # Sample family that seed.py loads into the database
 ├── family.py             # Relationships, story counts and page data
@@ -72,6 +73,8 @@ branchspoken/
 | `/join` | Join a tree from an invite |
 | `/tree` | Family tree |
 | `/relatives/<id>` | A relative's profile |
+| `/relatives/<id>/add` | Add a parent, child, spouse or sibling (Keepers and Editors) |
+| `/relatives/<id>/edit` | Edit someone's details (Keepers and Editors, or yourself) |
 | `/stories` | All stories |
 | `/stories/<id>` | One story |
 | `/add-memory` | Record a memory |

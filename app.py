@@ -14,6 +14,7 @@ import db
 import family as fam
 import invites
 import memories
+import relatives
 
 REQUIRED_SETTINGS = ["SECRET_KEY", "DATABASE_URL"]
 missing = [name for name in REQUIRED_SETTINGS if not os.environ.get(name)]
@@ -77,6 +78,12 @@ def security_headers(response):
 def not_found(error):
     return render_template("error.html", title="Not found",
                            message="We couldn't find that page, or it belongs to a family you're not part of."), 404
+
+
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template("error.html", title="Not allowed",
+                           message="Only the tree's Keeper and Editors can change this."), 403
 
 
 @app.errorhandler(429)
@@ -273,6 +280,62 @@ def relative(person_id):
         abort(404)
     profile = fam.profile(person_id)
     return render_template("relative.html", **profile)
+
+
+@app.route("/relatives/<person_id>/add", methods=["GET", "POST"])
+@limiter.limit("60 per hour", methods=["POST"])
+def add_relative(person_id):
+    if not fam.can_see(person_id):
+        abort(404)
+    if not fam.can_add_relatives(person_id):
+        abort(403)
+
+    anchor = fam.get_person(person_id)
+    family_id = next(f for f in fam.families_with(person_id)
+                     if fam.VIEWER_ROLES.get(f) in ("keeper", "editor"))
+    existing = fam.unplaced_members(family_id, exclude=[person_id])
+    values = request.form if request.method == "POST" else request.args
+    relation = values.get("as", "parent")
+    error = None
+
+    if request.method == "POST":
+        existing_id = request.form.get("existing") or None
+        if existing_id and existing_id not in [p["id"] for p in existing]:
+            existing_id = None
+        try:
+            new_id = relatives.add_relative(
+                person_id, relation, request.form, request.files, family_id,
+                existing_id=existing_id, also_spouse="also_spouse" in request.form)
+        except relatives.RelativeError as problem:
+            error = str(problem)
+        else:
+            return redirect(url_for("relative", person_id=new_id))
+
+    spouse = fam.get_person(fam.spouse_of(person_id)) if fam.spouse_of(person_id) else None
+    return render_template("relative-form.html", mode="add", anchor=anchor, relation=relation,
+                           relations=relatives.RELATIONS, existing=existing, spouse=spouse,
+                           person={}, error=error, form=request.form)
+
+
+@app.route("/relatives/<person_id>/edit", methods=["GET", "POST"])
+@limiter.limit("60 per hour", methods=["POST"])
+def edit_relative(person_id):
+    if not fam.can_see(person_id):
+        abort(404)
+    if not fam.can_edit_person(person_id):
+        abort(403)
+
+    error = None
+    if request.method == "POST":
+        try:
+            relatives.update_person(person_id, request.form, request.files)
+        except relatives.RelativeError as problem:
+            error = str(problem)
+        else:
+            return redirect(url_for("relative", person_id=person_id))
+
+    return render_template("relative-form.html", mode="edit", anchor=None,
+                           person=fam.get_person(person_id), error=error, form=request.form)
 
 
 @app.route("/family", methods=["GET", "POST"])

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{# one form for adding a relative and editing someone's details #}
+{% set adding = mode == "add" %}
+{% set back_to = anchor.id if adding else person.id %}
+
+{% macro value(field, saved) -%}
+  {{ form[field] if form else (saved if saved is not none else "") }}
+{%- endmacro %}
+
+{% block title %}{{ "Add a relative" if adding else "Edit " ~ person.first }} | Branch Spoken{% endblock %}
+{% block body_class %}page-write page-person-form{% endblock %}
+
+{% block tabbar %}{% endblock %}
+
+{% block content %}
+
+  <header>
+    <a class="back" href="{{ url_for('relative', person_id=back_to) }}">Back</a>
+  </header>
+
+  <main>
+
+    <section aria-labelledby="form-heading">
+      <p class="eyebrow">{{ "Grow the tree" if adding else "Edit details" }}</p>
+      <h1 id="form-heading">
+        {%- if adding %}Add a relative of {{ anchor.first }}{% else %}{{ person.name }}{% endif -%}
+      </h1>
+      <p class="lead">
+        {%- if adding -%}
+          Add someone new, or place someone who's already in the family on the tree.
+        {%- else -%}
+          Fix names, dates and places, or add a photo.
+        {%- endif -%}
+      </p>
+    </section>
+
+    <form action="{{ url_for('add_relative', person_id=anchor.id) if adding else url_for('edit_relative', person_id=person.id) }}"
+          method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+
+      <div class="write-main">
+
+        {% if adding %}
+          <fieldset class="chips">
+            <legend>Who are you adding?</legend>
+            {% for key, label in relations.items() %}
+              <input type="radio" id="as-{{ key }}" name="as" value="{{ key }}"{% if key == relation %} checked{% endif %}>
+              <label for="as-{{ key }}">{{ label }} of {{ anchor.first }}</label>
+            {% endfor %}
+          </fieldset>
+
+          {% if spouse %}
+            <div class="inline-check">
+              <input type="checkbox" id="also-spouse" name="also_spouse" value="1"
+                     {% if not form or form.also_spouse %} checked{% endif %}>
+              <label for="also-spouse">If it's a child, they're {{ spouse.first }}'s child too</label>
+            </div>
+          {% endif %}
+
+          {% if existing %}
+            <div>
+              <label for="existing">Someone already in the family?</label>
+              <select id="existing" name="existing">
+                <option value="">No, someone new (fill in below)</option>
+                {% for p in existing %}
+                  <option value="{{ p.id }}"{% if form.existing == p.id %} selected{% endif %}>{{ p.name }}</option>
+                {% endfor %}
+              </select>
+              <p>Like someone who joined from an invite. Pick them and skip the details below.</p>
+            </div>
+          {% endif %}
+        {% endif %}
+
+        <div class="write-pair">
+          <div>
+            <label for="first-name">First name</label>
+            <input type="text" id="first-name" name="first_name" maxlength="60" value="{{ value('first_name', person.first) }}">
+          </div>
+          <div>
+            <label for="last-name">Last name</label>
+            <input type="text" id="last-name" name="last_name" maxlength="60" value="{{ value('last_name', person.last) }}">
+          </div>
+        </div>
+
+        <div>
+          <label for="sex">Used for words like grandmother or uncle</label>
+          {% set sex = form.sex if form else (person.sex or "") %}
+          <select id="sex" name="sex">
+            <option value=""{% if not sex %} selected{% endif %}>Not set (say parent, sibling)</option>
+            <option value="f"{% if sex == "f" %} selected{% endif %}>Woman (mother, sister, aunt)</option>
+            <option value="m"{% if sex == "m" %} selected{% endif %}>Man (father, brother, uncle)</option>
+          </select>
+        </div>
+
+        <div class="write-pair">
+          <div>
+            <label for="born">Year born</label>
+            <input type="text" id="born" name="born" inputmode="numeric" maxlength="4" placeholder="1931" value="{{ value('born', person.born) }}">
+          </div>
+          <div>
+            <label for="birthplace">Born in</label>
+            <input type="text" id="birthplace" name="birthplace" maxlength="80" placeholder="Springfield, Illinois" value="{{ value('birthplace', person.birthplace) }}">
+          </div>
+        </div>
+
+        <div class="write-pair">
+          <div>
+            <label for="died">Year died (if they have)</label>
+            <input type="text" id="died" name="died" inputmode="numeric" maxlength="4" value="{{ value('died', person.died) }}">
+          </div>
+          <div>
+            <label for="deathplace">Died in</label>
+            <input type="text" id="deathplace" name="deathplace" maxlength="80" value="{{ value('deathplace', person.deathplace) }}">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="write-side">
+        <div>
+          <label for="photo">{{ "Change photo" if person.photo else "Photo (optional)" }}</label>
+          <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/gif,image/webp">
+        </div>
+
+        <div>
+          <label for="photo-caption">Photo caption</label>
+          <input type="text" id="photo-caption" name="photo_caption" maxlength="80" placeholder="Ruth, c. 1950" value="{{ value('photo_caption', person.photo_caption) }}">
+        </div>
+
+        <button type="submit">{{ "Add to the tree" if adding else "Save changes" }}</button>
+      </div>
+    </form>
+
+  </main>
+
+{% endblock %}

@@ -13,7 +13,7 @@
   <{{ tag }} class="node{% if n.people|length == 2 %} couple{% endif %}{% if n.is_viewer %} you{% endif %}{{ extra }}">
     <span class="names">
       {%- for p in n.people -%}
-        {% if not loop.first %} &amp; {% endif %}<a href="{{ url_for('relative', person_id=p.id) }}">{% if n.is_viewer %}You &middot; {% endif %}{{ p.first }}</a>
+        {% if not loop.first %} &amp; {% endif %}<a href="{{ url_for('relative', person_id=p.id) }}">{% if g.viewer and p.id == g.viewer.id %}You &middot; {% endif %}{{ p.first }}</a>
       {%- endfor -%}
     </span>
     <span class="years">{{ n.years }}</span>
@@ -74,6 +74,14 @@
             {% endfor %}
           </ul>
         </section>
+      {% endif %}
+
+      {% if tree.people_count == 1 and g.viewer %}
+        <aside class="prompt start-tree" aria-labelledby="start-heading">
+          <h2 id="start-heading">Start with your parents</h2>
+          <p>Add your parents, then their parents. Each person you add gets their own page for stories.</p>
+          <a class="button button-small" href="{{ url_for('add_relative', person_id=g.viewer.id, **{'as': 'parent'}) }}">Add a parent</a>
+        </aside>
       {% endif %}
 
       <p class="tree-hint">Each leaf is a story.</p>

@@ -3192,3 +3192,56 @@ nav[aria-label="Main"] li:nth-child(3) a:hover {
     font-size: 106.25%;
   }
 }
+
+
+/* ==========================================================
+   Adding and editing relatives
+   ========================================================== */
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-relatives {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.add-relatives a {
+  padding: 0.4rem 0.85rem;
+  border: 1.5px dashed var(--line);
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--terracotta-dark);
+  text-decoration: none;
+}
+
+.add-relatives a:hover {
+  border-style: solid;
+  border-color: var(--terracotta);
+  background: var(--paper);
+}
+
+.inline-check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.inline-check label {
+  margin: 0;
+  font-weight: 400;
+}
+
+.page-person-form .write-pair > div {
+  margin-bottom: 1.1rem;
+}
+
+.start-tree {
+  flex-basis: 100%;
+  margin: 1rem 0;
+}

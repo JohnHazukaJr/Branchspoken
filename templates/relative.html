@@ -12,14 +12,17 @@
 
   <header>
     <a class="back" href="{{ url_for('tree') }}" aria-label="Back to the family tree">Back</a>
-    <a class="pill" href="/relatives/{{ person.id }}/share">Share</a>
+    <div class="header-actions">
+      {% if can_edit %}<a class="pill" href="{{ url_for('edit_relative', person_id=person.id) }}">Edit</a>{% endif %}
+      <a class="pill" href="/relatives/{{ person.id }}/share">Share</a>
+    </div>
   </header>
 
   <main>
 
     <figure class="portrait">
       {% if person.photo %}
-        <img src="{{ url_for('static', filename=person.photo) }}" alt="Portrait of {{ person.name }}">
+        <img src="{{ person.photo|media_url }}" alt="Portrait of {{ person.name }}">
       {% endif %}
       <figcaption>{{ person.photo_caption or person.first }}</figcaption>
     </figure>
@@ -27,15 +30,17 @@
     <section aria-labelledby="relative-name">
       <p class="eyebrow">{{ relation }}</p>
       <h1 id="relative-name">{{ person.name }}</h1>
-      <p class="lifespan">
-        {% if person.died %}
-          <time datetime="{{ person.born }}">{{ person.born }}</time> {{ person.birthplace }}
-          &mdash;
-          <time datetime="{{ person.died }}">{{ person.died }}</time> {{ person.deathplace }}
-        {% else %}
-          Born <time datetime="{{ person.born }}">{{ person.born }}</time> in {{ person.birthplace }}
-        {% endif %}
-      </p>
+      {% if person.born or person.birthplace or person.died %}
+        <p class="lifespan">
+          {% if person.died %}
+            {% if person.born %}<time datetime="{{ person.born }}">{{ person.born }}</time>{% endif %} {{ person.birthplace or "" }}
+            &mdash;
+            <time datetime="{{ person.died }}">{{ person.died }}</time> {{ person.deathplace or "" }}
+          {% else %}
+            Born{% if person.born %} <time datetime="{{ person.born }}">{{ person.born }}</time>{% endif %}{% if person.birthplace %} in {{ person.birthplace }}{% endif %}
+          {% endif %}
+        </p>
+      {% endif %}
 
       <div class="actions">
         {% if voice_minutes %}
@@ -45,17 +50,31 @@
       </div>
     </section>
 
-    {% if family %}
+    {% if family or can_add %}
       <section aria-labelledby="family-heading">
         <h2 id="family-heading">Family</h2>
-        <dl class="family-list">
-          {% for label, relatives in family %}
-            <dt>{{ label }}</dt>
-            {% for r in relatives %}
-              <dd><a href="{{ url_for('relative', person_id=r.id) }}">{{ r.first }}</a></dd>
+        {% if family %}
+          <dl class="family-list">
+            {% for label, relatives in family %}
+              <dt>{{ label }}</dt>
+              {% for r in relatives %}
+                <dd><a href="{{ url_for('relative', person_id=r.id) }}">{{ r.first }}</a></dd>
+              {% endfor %}
             {% endfor %}
-          {% endfor %}
-        </dl>
+          </dl>
+        {% else %}
+          <p class="meta">No relatives on the tree yet. Add {{ person.pronoun }} parents, children or husband or wife to grow the tree.</p>
+        {% endif %}
+
+        {% if can_add %}
+          <div class="add-relatives" aria-label="Add a relative of {{ person.first }}">
+            {% for key, label in [("parent", "Parent"), ("child", "Child"), ("spouse", "Husband or wife"), ("sibling", "Brother or sister")] %}
+              {% if add_options[key] %}
+                <a href="{{ url_for('add_relative', person_id=person.id, **{'as': key}) }}">+ {{ label }}</a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
       </section>
     {% endif %}
 

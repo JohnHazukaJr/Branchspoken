@@ -17,6 +17,7 @@ JOURNEYS, EVENTS, MEMBERS, QUESTIONS = [], [], [], []
 # The trees the viewer belongs to, and everyone in them.
 # Nobody outside these trees is shown to the viewer.
 VIEWER_FAMILIES = []
+VIEWER_ROLES = {}          # family_id -> the viewer's role in it
 VISIBLE = set()
 
 
@@ -34,11 +35,36 @@ def refresh(viewer_id=None):
         visible |= tree_people(family_id)
         visible |= {m["person"] for m in MEMBERS if m["family"] == family_id}
     globals()["VIEWER_FAMILIES"] = families
+    globals()["VIEWER_ROLES"] = {m["family"]: m["role"] for m in MEMBERS if m["person"] == viewer_id}
     globals()["VISIBLE"] = visible
 
 
 def can_see(person_id):
     return person_id in VISIBLE
+
+
+def families_with(person_id):
+    """The viewer's trees that include this person, on the tree or as a member."""
+    return [f for f in VIEWER_FAMILIES
+            if person_id in tree_people(f) or person_id in {m["person"] for m in MEMBERS if m["family"] == f}]
+
+
+def can_add_relatives(person_id):
+    """Keepers and Editors can add relatives to anyone in their trees."""
+    return any(VIEWER_ROLES.get(f) in ("keeper", "editor") for f in families_with(person_id))
+
+
+def can_edit_person(person_id):
+    """Keepers and Editors can edit anyone in their trees, everyone can edit themselves."""
+    return person_id == VIEWER_ID or can_add_relatives(person_id)
+
+
+def unplaced_members(family_id, exclude=()):
+    """Members who aren't drawn on the tree yet, like an accepted invite, to place as a relative."""
+    on_tree = tree_people(family_id)
+    ids = [m["person"] for m in MEMBERS
+           if m["family"] == family_id and m["person"] not in on_tree and m["person"] not in exclude]
+    return [get_person(pid) for pid in ids]
 
 
 def can_see_story(story_id):
@@ -48,8 +74,9 @@ def can_see_story(story_id):
 
 def can_see_media(path):
     """True if an uploaded file belongs to a story the viewer can see."""
-    return any(path in (s.get("audio"), s.get("photo")) and can_see_story(sid)
-               for sid, s in STORIES.items())
+    return (any(path in (s.get("audio"), s.get("photo")) and can_see_story(sid)
+                for sid, s in STORIES.items())
+            or any(p.get("photo") == path and can_see(pid) for pid, p in PEOPLE.items()))
 
 
 # ---------- People ----------
@@ -105,9 +132,11 @@ WORDS = {
     "great-grandparent": ("great-grandfather", "great-grandmother", "great-grandparent"),
     "grandchild": ("grandson", "granddaughter", "grandchild"),
     "aunt-uncle": ("uncle", "aunt", "aunt or uncle"),
+    "great-aunt-uncle": ("great-uncle", "great-aunt", "great-aunt or uncle"),
     "niece-nephew": ("nephew", "niece", "niece or nephew"),
     "cousin": ("cousin", "cousin", "cousin"),
     "parent-in-law": ("father-in-law", "mother-in-law", "parent-in-law"),
+    "sibling-in-law": ("brother-in-law", "sister-in-law", "sibling-in-law"),
     "child-in-law": ("son-in-law", "daughter-in-law", "child-in-law"),
 }
 
@@ -145,12 +174,16 @@ def relation(from_id, to_id):
             return (_word("grandparent", to_id), _side(parent))
         if to_id in siblings_of(parent):
             return (_word("aunt-uncle", to_id), _side(parent))
+        if any(spouse_of(s) == to_id for s in siblings_of(parent)):
+            return (_word("aunt-uncle", to_id), _side(parent))
         for aunt_or_uncle in siblings_of(parent):
             if to_id in all_children_of(aunt_or_uncle):
                 return (_word("cousin", to_id), _side(parent))
         for grandparent in parents_of(parent):
             if to_id in parents_of(grandparent):
                 return (_word("great-grandparent", to_id), _side(parent))
+            if to_id in siblings_of(grandparent):
+                return (_word("great-aunt-uncle", to_id), _side(parent))
 
     for child in all_children_of(from_id):
         if to_id in all_children_of(child):
@@ -164,6 +197,10 @@ def relation(from_id, to_id):
     spouse = spouse_of(from_id)
     if spouse and to_id in parents_of(spouse):
         return (_word("parent-in-law", to_id), None)
+    if spouse and to_id in siblings_of(spouse):
+        return (_word("sibling-in-law", to_id), None)
+    if any(spouse_of(s) == to_id for s in siblings_of(from_id)):
+        return (_word("sibling-in-law", to_id), None)
 
     return ("relative", None)
 
@@ -267,6 +304,15 @@ def profile(person_id):
         "voice_minutes": voice_minutes,
         "family": family,
         "ask": ask,
+        "can_edit": can_edit_person(person_id),
+        "can_add": can_add_relatives(person_id),
+        # which "+ relative" buttons make sense for this person
+        "add_options": {
+            "parent": len(parents_of(person_id)) < 2,
+            "child": True,
+            "spouse": not spouse_of(person_id),
+            "sibling": bool(parents_of(person_id)),
+        },
     }
 
 
